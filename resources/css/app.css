@@ -1,9 +1,49 @@
+@import "@fortawesome/fontawesome-free/css/all.min.css";
 @import 'tailwindcss';
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
 
+/* ==========================================================
+   THEME COLOR
+========================================================== */
+
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif,
+        'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
+        'Noto Color Emoji';
+
+    --color-primary: #5AA8D6;
+    --color-secondary: #3A4163;
+    --color-background: #EDF3FB;
+    --color-accent: #CBE3EF;
+    --color-surface: #FFFFFF;
 }
+
+    .login-card{
+        @apply bg-white rounded-xl shadow-lg p-8;
+    }
+
+    .form-label{
+        @apply block mb-2 text-sm font-medium text-gray-700;
+    }
+
+    .form-input{
+    @apply w-full rounded-lg border border-gray-300 py-2.5 pr-4 pl-10
+            focus:outline-none
+            focus:ring-2
+            focus:ring-[#5AA8D6]
+            focus:border-[#5AA8D6];
+    }
+    .btn-primary{
+        @apply w-full rounded-lg py-2.5
+            font-semibold
+            text-white
+            transition-all
+            duration-300;
+        background-color:#5AA8D6;
+    }
+
+    .btn-primary:hover{
+        background-color:#3A4163;
+    }
