@@ -12,10 +12,18 @@ Route::get('/login', [LoginController::class, 'index'])->name('login');
 Route::post('/login', [LoginController::class, 'authenticate'])->name('login.authenticate');
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
-Route::get('/admin/dashboard', function () {
-    return "Dashboard Admin";
-})->name('admin.dashboard');
+Route::middleware(['auth','role:admin'])->prefix('admin')->name('admin.')->group(function () {
 
-Route::get('/owner/dashboard', function () {
-    return "Dashboard Owner";
-})->name('owner.dashboard');
+    Route::get('/dashboard', function () {
+        return view('admin.dashboard');
+    })->name('dashboard');
+
+});
+
+Route::middleware(['auth','role:owner'])->prefix('owner')->name('owner.')->group(function () {
+
+    Route::get('/dashboard', function () {
+        return view('owner.dashboard');
+    })->name('dashboard');
+    
+});
