@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Admin\PelangganController;
 
 
 Route::get('/', function () {
@@ -18,6 +19,13 @@ Route::middleware(['auth','role:admin'])->prefix('admin')->name('admin.')->group
         return view('admin.dashboard');
     })->name('dashboard');
 
+    Route::get('/pelanggan',[PelangganController::class,'index'])->name('pelanggan.index');
+    Route::get('/pelanggan/create',[PelangganController::class,'create'])->name('pelanggan.create');
+    Route::post('/pelanggan/store',[PelangganController::class,'store'])->name('pelanggan.store');
+    Route::get('/pelanggan/{id}/edit',[PelangganController::class,'edit'])->name('pelanggan.edit');
+    Route::put('/pelanggan/{id}',[PelangganController::class,'update'])->name('pelanggan.update');
+    Route::delete('/pelanggan/{id}',[PelangganController::class,'destroy'])->name('pelanggan.destroy');
+    
 });
 
 Route::middleware(['auth','role:owner'])->prefix('owner')->name('owner.')->group(function () {

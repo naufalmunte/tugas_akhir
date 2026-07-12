@@ -1,6 +1,6 @@
 <nav class="bg-white shadow-sm border-b px-6 py-4 flex justify-between items-center">
     <div>
-        <h1 class="text-xl font-semibold text-[#3A4163]">
+        <h1 class="heading text-xl font-semibold text-[#3A4163]">
             @yield('page-title')
         </h1>
     </div>

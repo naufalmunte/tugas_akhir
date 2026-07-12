@@ -23,12 +23,8 @@
 
         <!-- Judul -->
         <h1 class="text-2xl font-bold text-center text-[#3A4163]">
-            CV. Kaemka Mitra Karya
-        </h1>
-
-        <h2 class="text-lg font-semibold text-center text-[#5AA8D6] mt-1">
             Door Smeer 24 Jam
-        </h2>
+        </h1>
 
         <p class="text-sm text-center text-gray-500 mt-2">
             Sistem Informasi Manajemen Layanan Door Smeer Mobil

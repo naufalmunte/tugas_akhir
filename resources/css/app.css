@@ -1,3 +1,12 @@
+@import "@fontsource/poppins/400.css";
+@import "@fontsource/poppins/500.css";
+@import "@fontsource/poppins/600.css";
+@import "@fontsource/poppins/700.css";
+
+@import "@fontsource/open-sans/400.css";
+@import "@fontsource/open-sans/500.css";
+@import "@fontsource/open-sans/600.css";
+@import "@fontsource/open-sans/700.css";
 @import "@fortawesome/fontawesome-free/css/all.min.css";
 @import 'tailwindcss';
 
@@ -9,9 +18,9 @@
 ========================================================== */
 
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif,
-        'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
-        'Noto Color Emoji';
+    --font-heading: 'Poppins', sans-serif;
+    --font-body: 'Open Sans', sans-serif;
+    --font-sans: 'Open Sans', sans-serif;
 
     --color-primary: #5AA8D6;
     --color-secondary: #3A4163;
@@ -29,7 +38,7 @@
     }
 
     .form-input{
-    @apply w-full rounded-lg border border-gray-300 py-2.5 pr-4 pl-10
+        @apply w-full rounded-lg border border-gray-300 px-4 py-2.5 pr-4 pl-10
             focus:outline-none
             focus:ring-2
             focus:ring-[#5AA8D6]
@@ -46,4 +55,36 @@
 
     .btn-primary:hover{
         background-color:#3A4163;
+    }
+
+    .heading{
+        font-family: 'Poppins', sans-serif;
+    }
+
+    .body-text{
+        font-family:'Open Sans',sans-serif;
+    }
+
+    .sidebar{
+        font-family: 'Poppins', sans-serif;
+    }
+
+    .card{
+        @apply bg-white rounded-xl shadow-sm;
+    }
+
+    .card-header{
+        @apply border-b px-6 py-4;
+    }
+
+    .table-header{
+        @apply bg-gray-100;
+    }
+
+    .table-th{
+        @apply px-6 py-3 text-left font-semibold;
+    }
+
+    .table-td{
+        @apply px-6 py-4;
     }

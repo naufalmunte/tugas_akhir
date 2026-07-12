@@ -9,7 +9,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
-<body class="bg-[#EDF3FB]">
+<body class="bg-[#EDF3FB] font-sans">
     <div class="min-h-screen flex">
         @include('layouts.sidebar')
 
@@ -23,5 +23,7 @@
             @include('layouts.footer')
         </div>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </body>
 </html>
