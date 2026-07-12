@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Admin\PelangganController;
+use App\Http\Controllers\Admin\KategoriLayananController;
 
 
 Route::get('/', function () {
@@ -25,6 +26,13 @@ Route::middleware(['auth','role:admin'])->prefix('admin')->name('admin.')->group
     Route::get('/pelanggan/{id}/edit',[PelangganController::class,'edit'])->name('pelanggan.edit');
     Route::put('/pelanggan/{id}',[PelangganController::class,'update'])->name('pelanggan.update');
     Route::delete('/pelanggan/{id}',[PelangganController::class,'destroy'])->name('pelanggan.destroy');
+
+    Route::get('/kategori-layanan',[KategoriLayananController::class,'index'])->name('kategori-layanan.index');
+    Route::get('/kategori-layanan/create',[KategoriLayananController::class,'create'])->name('kategori-layanan.create');
+    Route::post('/kategori-layanan/store',[KategoriLayananController::class,'store'])->name('kategori-layanan.store');
+    Route::get('/kategori-layanan/{id}/edit',[KategoriLayananController::class,'edit'])->name('kategori-layanan.edit');
+    Route::put('/kategori-layanan/{id}',[KategoriLayananController::class,'update'])->name('kategori-layanan.update');
+    Route::delete('/kategori-layanan/{id}',[KategoriLayananController::class,'destroy'])->name('kategori-layanan.destroy');
     
 });
 

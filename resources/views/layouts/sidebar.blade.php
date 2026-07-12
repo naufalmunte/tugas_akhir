@@ -45,7 +45,7 @@
             </li>
 
             <li>
-                <a href="#" class="flex items-center gap-3 pl-11 py-2 text-sm hover:bg-[#5AA8D6]">
+                <a href="{{ route('admin.kategori-layanan.index') }}" class="flex items-center gap-3 pl-11 py-2 text-sm hover:bg-[#5AA8D6]">
                     <i class="fa-solid fa-layer-group w-4"></i>
                     Kategori Layanan
                 </a>
