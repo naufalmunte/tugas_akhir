@@ -38,7 +38,7 @@
             </li>
 
             <li>
-                <a href="#" class="flex items-center gap-3 pl-11 py-2 text-sm hover:bg-[#5AA8D6]">
+                <a href="{{ route('admin.kendaraan.index') }}" class="flex items-center gap-3 pl-11 py-2 text-sm hover:bg-[#5AA8D6]">
                     <i class="fa-solid fa-car w-4"></i>
                     Kendaraan
                 </a>
@@ -59,7 +59,7 @@
             </li>
 
             <li>
-                <a href="#" class="flex items-center gap-3 pl-11 py-2 text-sm hover:bg-[#5AA8D6]">
+                <a href="{{ route('admin.karyawan.index') }}" class="flex items-center gap-3 pl-11 py-2 text-sm hover:bg-[#5AA8D6]">
                     <i class="fa-solid fa-user-tie w-4"></i>
                     Karyawan
                 </a>

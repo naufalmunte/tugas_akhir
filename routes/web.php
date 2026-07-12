@@ -5,7 +5,8 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Admin\PelangganController;
 use App\Http\Controllers\Admin\KategoriLayananController;
 use App\Http\Controllers\Admin\LayananController;
-
+use App\Http\Controllers\Admin\KendaraanController;
+use App\Http\Controllers\Admin\KaryawanController;
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -41,6 +42,22 @@ Route::middleware(['auth','role:admin'])->prefix('admin')->name('admin.')->group
     Route::get('/layanan/{id}/edit',[LayananController::class,'edit'])->name('layanan.edit');
     Route::put('/layanan/{id}',[LayananController::class,'update'])->name('layanan.update');
     Route::delete('/layanan/{id}',[LayananController::class,'destroy'])->name('layanan.destroy');
+
+    Route::get('/kendaraan',[KendaraanController::class,'index'])->name('kendaraan.index');
+    Route::get('/kendaraan/edit/{id}',[KendaraanController::class,'edit'])->name('kendaraan.edit');
+    Route::put('/kendaraan/update/{id}',[KendaraanController::class,'update'])->name('kendaraan.update');
+    Route::delete('/kendaraan/delete/{id}',[KendaraanController::class,'destroy'])->name('kendaraan.destroy');
+    Route::get('/order/{pelanggan}/kendaraan/create',[KendaraanController::class,'create'])
+        ->name('order.kendaraan.create');
+    Route::post('/order/{pelanggan}/kendaraan/store',[KendaraanController::class,'store'])
+        ->name('order.kendaraan.store');
+
+    Route::get('/karyawan',[KaryawanController::class,'index'])->name('karyawan.index');
+    Route::get('/karyawan/create',[KaryawanController::class,'create'])->name('karyawan.create');
+    Route::post('/karyawan/store',[KaryawanController::class,'store'])->name('karyawan.store');
+    Route::get('/karyawan/edit/{id}',[KaryawanController::class,'edit'])->name('karyawan.edit');
+    Route::put('/karyawan/update/{id}',[KaryawanController::class,'update'])->name('karyawan.update');
+    Route::delete('/karyawan/delete/{id}',[KaryawanController::class,'destroy'])->name('karyawan.destroy');
     
 });
 

@@ -16,4 +16,10 @@ class Pelanggan extends Model
         'alamat',
         'qr_code_path',
     ];
+
+
+    public function kendaraan()
+    {
+        return $this->hasMany(Kendaraan::class,'pelanggan_id');
+    }
 }
