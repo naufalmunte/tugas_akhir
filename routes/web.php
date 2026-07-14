@@ -7,6 +7,8 @@ use App\Http\Controllers\Admin\KategoriLayananController;
 use App\Http\Controllers\Admin\LayananController;
 use App\Http\Controllers\Admin\KendaraanController;
 use App\Http\Controllers\Admin\KaryawanController;
+use App\Http\Controllers\Admin\OrderController;
+use App\Http\Controllers\Admin\AntreanController;
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -47,10 +49,7 @@ Route::middleware(['auth','role:admin'])->prefix('admin')->name('admin.')->group
     Route::get('/kendaraan/edit/{id}',[KendaraanController::class,'edit'])->name('kendaraan.edit');
     Route::put('/kendaraan/update/{id}',[KendaraanController::class,'update'])->name('kendaraan.update');
     Route::delete('/kendaraan/delete/{id}',[KendaraanController::class,'destroy'])->name('kendaraan.destroy');
-    Route::get('/order/{pelanggan}/kendaraan/create',[KendaraanController::class,'create'])
-        ->name('order.kendaraan.create');
-    Route::post('/order/{pelanggan}/kendaraan/store',[KendaraanController::class,'store'])
-        ->name('order.kendaraan.store');
+
 
     Route::get('/karyawan',[KaryawanController::class,'index'])->name('karyawan.index');
     Route::get('/karyawan/create',[KaryawanController::class,'create'])->name('karyawan.create');
@@ -58,6 +57,38 @@ Route::middleware(['auth','role:admin'])->prefix('admin')->name('admin.')->group
     Route::get('/karyawan/edit/{id}',[KaryawanController::class,'edit'])->name('karyawan.edit');
     Route::put('/karyawan/update/{id}',[KaryawanController::class,'update'])->name('karyawan.update');
     Route::delete('/karyawan/delete/{id}',[KaryawanController::class,'destroy'])->name('karyawan.destroy');
+    
+    Route::get('/order',[OrderController::class,'index'])->name('order.index');
+    Route::get('/order/create',[OrderController::class,'create'])->name('order.create');
+    Route::post('/order/store',[OrderController::class,'store'])->name('order.store');
+
+    Route::get('/order/layanan/{kategori}',[OrderController::class,'getLayanan'])
+        ->name('order.layanan');
+
+    Route::get('/order/kendaraan/{pelanggan}',[OrderController::class,'getKendaraan'])
+        ->name('order.kendaraan');
+
+    Route::get('/order/{pelanggan}/kendaraan/create',[KendaraanController::class,'create'])
+        ->name('order.kendaraan.create');
+
+    Route::post('/order/{pelanggan}/kendaraan/store',[KendaraanController::class,'store'])
+        ->name('order.kendaraan.store');
+
+    Route::post('/order/scan',[OrderController::class,'scanQr'])
+    ->name('order.scan');
+    
+    Route::get('/order/pelanggan/{id}',[OrderController::class,'getPelanggan'])->name('order.pelanggan');
+
+
+
+    Route::get('/antrean',[AntreanController::class,'index'])->name('antrean.index');
+    Route::put('/antrean/{antrean}/mulai',[AntreanController::class,'mulai'])->name('antrean.mulai');
+    Route::put('/antrean/{antrean}/selesai-cuci',[AntreanController::class,'selesaiCuci'])->name('antrean.selesaiCuci');
+    Route::put('/antrean/{antrean}/bayar',[AntreanController::class,'bayar'])->name('antrean.bayar');
+    Route::get('/antrean/{antrean}/qris',[AntreanController::class,'generateQris'])
+    ->name('antrean.qris');
+
+
     
 });
 

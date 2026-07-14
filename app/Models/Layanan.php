@@ -21,4 +21,9 @@ class Layanan extends Model
     {
         return $this->belongsTo(KategoriLayanan::class,'kategori_layanan_id');
     }
+
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
+    }
 }

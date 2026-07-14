@@ -22,4 +22,9 @@ class Pelanggan extends Model
     {
         return $this->hasMany(Kendaraan::class,'pelanggan_id');
     }
+
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
+    }
 }

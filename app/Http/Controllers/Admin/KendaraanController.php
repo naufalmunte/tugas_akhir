@@ -7,6 +7,7 @@ use App\Models\Kendaraan;
 use App\Models\Pelanggan;
 use Illuminate\Http\Request;
 
+
 class KendaraanController extends Controller
 {
     public function index()
@@ -21,25 +22,41 @@ class KendaraanController extends Controller
         return view('admin.kendaraan.create',compact('pelanggan'));
     }
 
-    public function store(Request $request,Pelanggan $pelanggan)
-    {
+   public function store(Request $request,Pelanggan $pelanggan)
+{
+    try{
+
         $request->validate([
             'jenis_kendaraan'=>'required|in:Mobil,Motor',
             'plat_nomor'=>'required|max:20|unique:kendaraan,plat_nomor',
             'merk'=>'required|max:100'
         ]);
 
-        Kendaraan::create([
+        $kendaraan=Kendaraan::create([
             'pelanggan_id'=>$pelanggan->id,
             'jenis_kendaraan'=>$request->jenis_kendaraan,
             'plat_nomor'=>$request->plat_nomor,
             'merk'=>$request->merk
         ]);
 
-        return redirect()->route('admin.kendaraan.index')
-            ->with('success','Kendaraan berhasil ditambahkan.');
+        return response()->json([
+            'success'=>true,
+            'id'=>$kendaraan->id,
+            'plat_nomor'=>$kendaraan->plat_nomor,
+            'merk'=>$kendaraan->merk
+        ]);
+
+    }catch(\Throwable $e){
+
+        return response()->json([
+            'success'=>false,
+            'message'=>$e->getMessage(),
+            'line'=>$e->getLine(),
+            'file'=>$e->getFile()
+        ],500);
 
     }
+}
 
     public function edit($id)
     {

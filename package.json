@@ -17,6 +17,7 @@
         "@fontsource/open-sans": "^5.2.7",
         "@fontsource/poppins": "^5.2.7",
         "@fortawesome/fontawesome-free": "^7.3.0",
-        "flowbite": "^4.0.2"
+        "flowbite": "^4.0.2",
+        "html5-qrcode": "^2.3.8"
     }
 }

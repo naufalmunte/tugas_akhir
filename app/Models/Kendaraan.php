@@ -19,4 +19,9 @@ class Kendaraan extends Model
     {
         return $this->belongsTo(Pelanggan::class,'pelanggan_id');
     }
+
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
+    }
 }

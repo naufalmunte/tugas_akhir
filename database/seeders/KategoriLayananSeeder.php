@@ -9,19 +9,19 @@ class KategoriLayananSeeder extends Seeder
 {
     public function run(): void
     {
-        KategoriLayanan::insert([
-            [
-                'nama_kategori'=>'Cuci Mobil',
-                'deskripsi'=>'Layanan pencucian mobil'
-            ],
-            [
-                'nama_kategori'=>'Cuci Motor',
-                'deskripsi'=>'Layanan pencucian motor'
-            ],
-            [
-                'nama_kategori'=>'Cuci Karpet',
-                'deskripsi'=>'Layanan pencucian karpet'
-            ]
+        KategoriLayanan::create([
+            'nama_kategori'=>'Cuci Mobil',
+            'butuh_kendaraan'=>true
         ]);
+
+        KategoriLayanan::create([
+            'nama_kategori'=>'Cuci Motor',
+            'butuh_kendaraan'=>true
+        ]);
+
+        KategoriLayanan::create([
+            'nama_kategori'=>'Cuci Karpet',
+            'butuh_kendaraan'=>false
+]);
     }
 }

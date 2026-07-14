@@ -12,4 +12,9 @@ class Karyawan extends Model
         'nama',
         'no_hp'
     ];
+
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
+    }
 }

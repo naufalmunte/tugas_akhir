@@ -31,6 +31,7 @@
                     <tr>
                         <th class="border px-4 py-3 text-center">No</th>
                         <th class="border px-4 py-3 text-left">Nama Kategori</th>
+                        <th class="border px-4 py-3 text-left">Butuh Kendaraan</th>
                         <th class="border px-4 py-3 text-left">Deskripsi</th>
                         <th class="border px-4 py-3 text-center">Aksi</th>
                     </tr>
@@ -41,6 +42,7 @@
                         <tr class="kategori-row hover:bg-gray-50">
                             <td class="border px-4 py-3 text-center">{{ $loop->iteration }}</td>
                             <td class="border px-4 py-3">{{ $item->nama_kategori }}</td>
+                            <td class="border px-4 py-3">{{ $item->butuh_kendaraan ? 'Ya' : 'Tidak' }}</td>
                             <td class="border px-4 py-3">{{ $item->deskripsi ?? '-' }}</td>
                             <td class="border px-4 py-3">
                                 <div class="flex justify-center gap-2">
