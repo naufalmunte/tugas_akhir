@@ -10,6 +10,8 @@ use App\Http\Controllers\Admin\KaryawanController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\AntreanController;
 use App\Http\Controllers\Admin\StokController;
+use App\Http\Controllers\Owner\DashboardController;
+use App\Http\Controllers\Owner\LaporanController;
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -93,10 +95,25 @@ Route::middleware(['auth','role:admin'])->prefix('admin')->name('admin.')->group
     
 });
 
-Route::middleware(['auth','role:owner'])->prefix('owner')->name('owner.')->group(function () {
+Route::middleware(['auth','role:owner'])->prefix('owner')->name('owner.')->group(function(){
 
-    Route::get('/dashboard', function () {
-        return view('owner.dashboard');
-    })->name('dashboard');
-    
+    Route::get('/dashboard',[DashboardController::class,'index'])
+        ->name('dashboard');
+
+    Route::prefix('laporan')->name('laporan.')->group(function(){
+
+        Route::get('/order',[LaporanController::class,'order'])
+            ->name('order');
+
+        Route::get('/stok',[LaporanController::class,'stok'])
+            ->name('stok');
+
+    });
+
+    Route::get('/laporan/order/cetak',[LaporanController::class,'cetakOrder'])
+    ->name('laporan.order.cetak');
+
+    Route::get('/laporan/stok/cetak',[LaporanController::class,'cetakStok'])
+    ->name('laporan.stok.cetak');
+
 });
