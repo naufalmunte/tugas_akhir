@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\KendaraanController;
 use App\Http\Controllers\Admin\KaryawanController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\AntreanController;
+use App\Http\Controllers\Admin\StokController;
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -79,15 +80,15 @@ Route::middleware(['auth','role:admin'])->prefix('admin')->name('admin.')->group
     
     Route::get('/order/pelanggan/{id}',[OrderController::class,'getPelanggan'])->name('order.pelanggan');
 
-
-
     Route::get('/antrean',[AntreanController::class,'index'])->name('antrean.index');
     Route::put('/antrean/{antrean}/mulai',[AntreanController::class,'mulai'])->name('antrean.mulai');
     Route::put('/antrean/{antrean}/selesai-cuci',[AntreanController::class,'selesaiCuci'])->name('antrean.selesaiCuci');
     Route::put('/antrean/{antrean}/bayar',[AntreanController::class,'bayar'])->name('antrean.bayar');
-    Route::get('/antrean/{antrean}/qris',[AntreanController::class,'generateQris'])
-    ->name('antrean.qris');
+    Route::get('/antrean/{antrean}/qris',[AntreanController::class,'generateQris'])->name('antrean.qris');
 
+    Route::get('/stok',[StokController::class,'index'])->name('stok.index');
+    Route::post('/stok/store',[StokController::class,'store'])->name('stok.store');
+    Route::post('/stok/transaksi',[StokController::class,'transaksi'])->name('stok.transaksi');
 
     
 });

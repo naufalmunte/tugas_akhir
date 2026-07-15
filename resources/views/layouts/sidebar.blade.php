@@ -101,7 +101,7 @@
         </ul>
 
         {{-- Stok --}}
-        <a href="#"
+        <a href="{{ route('admin.stok.index') }}"
             class="flex items-center gap-3 px-5 py-2 text-sm hover:bg-[#5AA8D6] transition">
             <i class="fa-solid fa-boxes-stacked w-4"></i>
             <span>Stok</span>
