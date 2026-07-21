@@ -13,10 +13,9 @@ use App\Http\Controllers\Admin\StokController;
 use App\Http\Controllers\Owner\DashboardController;
 use App\Http\Controllers\Owner\LaporanController;
 use App\Http\Controllers\Owner\ProfilBisnisController;
+use App\Http\Controllers\LandingPageController;
 
-Route::get('/', function () {
-    return redirect()->route('login');
-});
+Route::get('/', [LandingPageController::class, 'index'])->name('landing');
 
 Route::get('/login', [LoginController::class, 'index'])->name('login');
 Route::post('/login', [LoginController::class, 'authenticate'])->name('login.authenticate');
