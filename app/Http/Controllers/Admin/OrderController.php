@@ -22,7 +22,7 @@ class OrderController extends Controller
             'layanan',
             'karyawan',
             'antrean'
-        ])->latest()->get();
+        ])->latest()->paginate(10);
 
         return view('admin.order.index',compact('orders'));
     }

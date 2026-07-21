@@ -10,23 +10,20 @@
 </head>
 
 <body class="bg-[#EDF3FB] font-sans">
-    <div class="min-h-screen flex">
+    <div class="flex h-screen">
         @include('layouts.sidebar')
 
-        <div class="flex-1 flex flex-col">
+        <div class="flex flex-1 flex-col overflow-hidden">
             @include('layouts.navbar')
 
-            <main class="flex-1 p-6">
+            <main class="flex-1 overflow-y-auto p-6">
                 @yield('content')
             </main>
 
             @include('layouts.footer')
         </div>
-    </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11">
-    
-    
-    </script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </body>
+
 </html>

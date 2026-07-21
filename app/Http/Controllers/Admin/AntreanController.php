@@ -23,8 +23,8 @@ class AntreanController extends Controller
             'order.pelanggan',
             'order.kendaraan',
             'order.layanan',
-            'order.karyawan'
-        ])->orderBy('id')->get();
+            'order.karyawan',
+        ])->latest()->paginate(10);
 
         $busy=Order::whereHas('antrean',function($q){
             $q->where('status','Diproses');
