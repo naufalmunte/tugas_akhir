@@ -90,6 +90,10 @@
                     </a>
                 </li>
             </ul>
+            <a href="{{ route('owner.profil-bisnis.index') }}" class="flex items-center gap-3 px-5 py-2 text-sm hover:bg-[#5AA8D6] transition">
+                <i class="fa-solid fa-building w-4"></i>
+                <span>Profil Bisnis</span>
+            </a>
         @endif
     </div>
 

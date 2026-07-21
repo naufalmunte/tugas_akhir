@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\AntreanController;
 use App\Http\Controllers\Admin\StokController;
 use App\Http\Controllers\Owner\DashboardController;
 use App\Http\Controllers\Owner\LaporanController;
+use App\Http\Controllers\Owner\ProfilBisnisController;
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -101,13 +102,11 @@ Route::middleware(['auth','role:owner'])->prefix('owner')->name('owner.')->group
         ->name('dashboard');
 
     Route::prefix('laporan')->name('laporan.')->group(function(){
-
         Route::get('/order',[LaporanController::class,'order'])
             ->name('order');
 
         Route::get('/stok',[LaporanController::class,'stok'])
             ->name('stok');
-
     });
 
     Route::get('/laporan/order/cetak',[LaporanController::class,'cetakOrder'])
@@ -115,5 +114,9 @@ Route::middleware(['auth','role:owner'])->prefix('owner')->name('owner.')->group
 
     Route::get('/laporan/stok/cetak',[LaporanController::class,'cetakStok'])
     ->name('laporan.stok.cetak');
+
+    Route::get('/profil-bisnis', [ProfilBisnisController::class, 'index'])->name('profil-bisnis.index');
+    Route::put('/profil-bisnis', [ProfilBisnisController::class, 'update'])->name('profil-bisnis.update');
+
 
 });

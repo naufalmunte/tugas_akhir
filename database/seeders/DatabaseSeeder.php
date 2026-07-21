@@ -8,6 +8,7 @@ use App\Models\Kendaraan;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
+
 class DatabaseSeeder extends Seeder
 {
     use WithoutModelEvents;
@@ -19,8 +20,9 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             // UserSeeder::class,
-            KategoriLayananSeeder::class,
-            // KendaraanSeeder::class
+            // KategoriLayananSeeder::class,
+            // KendaraanSeeder::class,
+            ProfilBisnisSeeder::class,
         ]);
     }
 }
