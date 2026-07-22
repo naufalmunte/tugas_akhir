@@ -91,7 +91,7 @@
             </button>
             <h2 class="heading mb-4 text-xl font-semibold text-center mt-2 text-gray-800">QR Code Pelanggan</h2>
             <div class="bg-gray-50 p-3 rounded-xl border border-gray-100 flex justify-center mx-auto w-fit">
-                <img id="modalQrImage" class="h-48 w-48 sm:h-64 sm:w-64 object-contain rounded-lg">
+                <img id="modalQrImage" class="h-24 w-24 sm:h-32 sm:w-32 object-contain rounded-lg">
             </div>
             <div class="mt-4 space-y-1 text-center">
                 <h3 id="modalNama" class="font-semibold text-lg text-gray-800"></h3>
@@ -145,7 +145,7 @@
             });
         });
 
-        fn showQr(image, nama, hp) {
+        function showQr(image, nama, hp) {
             document.getElementById('modalQrImage').src = image;
             document.getElementById('modalNama').innerText = nama;
             document.getElementById('modalHp').innerText = hp;
@@ -160,7 +160,7 @@
             document.getElementById('qrModal').classList.add('flex');
         }
 
-        fn closeQr() {
+        function closeQr() {
             document.getElementById('qrModal').classList.remove('flex');
             document.getElementById('qrModal').classList.add('hidden');
         }

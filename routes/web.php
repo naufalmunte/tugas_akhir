@@ -14,6 +14,7 @@ use App\Http\Controllers\Owner\DashboardController;
 use App\Http\Controllers\Owner\LaporanController;
 use App\Http\Controllers\Owner\ProfilBisnisController;
 use App\Http\Controllers\LandingPageController;
+use App\Http\Controllers\Owner\UserController;
 
 Route::get('/', [LandingPageController::class, 'index'])->name('landing');
 
@@ -100,6 +101,13 @@ Route::middleware(['auth','role:owner'])->prefix('owner')->name('owner.')->group
     Route::get('/dashboard',[DashboardController::class,'index'])
         ->name('dashboard');
 
+    Route::get('/users', [UserController::class, 'index'])->name('users.index');
+    Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
+    Route::post('/users/store', [UserController::class, 'store'])->name('users.store');
+    Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
+    Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
+    Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+
     Route::prefix('laporan')->name('laporan.')->group(function(){
         Route::get('/order',[LaporanController::class,'order'])
             ->name('order');
@@ -116,6 +124,5 @@ Route::middleware(['auth','role:owner'])->prefix('owner')->name('owner.')->group
 
     Route::get('/profil-bisnis', [ProfilBisnisController::class, 'index'])->name('profil-bisnis.index');
     Route::put('/profil-bisnis', [ProfilBisnisController::class, 'update'])->name('profil-bisnis.update');
-
 
 });
