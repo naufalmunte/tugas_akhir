@@ -17,4 +17,8 @@ class Karyawan extends Model
     {
         return $this->hasMany(Order::class);
     }
+    public function gaji()
+    {
+        return $this->hasMany(Gaji::class);
+    }
 }

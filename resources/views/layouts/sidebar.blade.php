@@ -76,6 +76,10 @@
                 <i class="fa-solid fa-users w-4"></i>
                 <span>Kelola User</span>
             </a>
+            <a href="{{ route('owner.periode-gaji.index') }}" class="flex items-center gap-3 px-5 py-2 text-sm hover:bg-[#5AA8D6] transition">
+                <i class="fa-solid fa-money-bill w-4"></i>
+                <span>Kelola Gaji</span>
+            </a>
 
             <button type="button" class="flex items-center w-full px-5 py-2 text-sm hover:bg-[#5AA8D6] transition" data-collapse-toggle="laporan-owner">
                 <i class="fa-solid fa-chart-column w-4"></i>
@@ -91,6 +95,11 @@
                 <li>
                     <a href="{{ route('owner.laporan.stok') }}" class="flex items-center gap-3 pl-11 py-2 text-sm hover:bg-[#5AA8D6]">
                         <i class="fa-solid fa-boxes-stacked w-4"></i> Stok
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('owner.laporan.gaji') }}" class="flex items-center gap-3 pl-11 py-2 text-sm hover:bg-[#5AA8D6]">
+                        <i class="fa-solid fa-money-bill w-4"></i> Gaji
                     </a>
                 </li>
             </ul>

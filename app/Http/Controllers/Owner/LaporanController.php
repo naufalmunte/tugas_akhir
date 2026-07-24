@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Order;
 use App\Models\StokTransaksi;
+use App\Models\Gaji;
+use App\Models\PeriodeGaji;
 use Barryvdh\DomPDF\Facade\Pdf;
 
 class LaporanController extends Controller
@@ -116,5 +118,42 @@ class LaporanController extends Controller
         return $pdf->stream('laporan-stok.pdf');
     }
 
+    public function gaji(Request $request)
+    {
+        $periode = PeriodeGaji::orderByDesc('tahun')
+            ->orderByDesc('id')
+            ->get();
 
+        $laporan = Gaji::with(['karyawan', 'periodeGaji'])
+            ->when($request->periode, function ($query) use ($request) {
+                $query->where('periode_gaji_id', $request->periode);
+            })
+            ->paginate(10)
+            ->withQueryString();
+
+        $totalOrder = $laporan->sum('jumlah_order');
+        $totalGaji = $laporan->sum('total_gaji');
+
+        return view('owner.laporan.gaji', compact(
+            'periode',
+            'laporan',
+            'totalOrder',
+            'totalGaji'
+        ));
+    }
+
+    public function cetakGaji(Request $request)
+    {
+        $laporan = Gaji::with(['karyawan', 'periodeGaji'])
+            ->when($request->periode, function ($query) use ($request) {
+                $query->where('periode_gaji_id', $request->periode);
+            })
+            ->orderBy('karyawan_id')
+            ->get();
+
+        $pdf = Pdf::loadView('owner.laporan.pdf.gaji', compact('laporan'))
+            ->setPaper('a4', 'portrait');
+
+        return $pdf->stream('laporan-gaji.pdf');
+    }
 }

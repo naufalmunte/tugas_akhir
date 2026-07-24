@@ -15,12 +15,15 @@ use App\Http\Controllers\Owner\LaporanController;
 use App\Http\Controllers\Owner\ProfilBisnisController;
 use App\Http\Controllers\LandingPageController;
 use App\Http\Controllers\Owner\UserController;
+use App\Http\Controllers\Owner\PeriodeGajiController;
 
 Route::get('/', [LandingPageController::class, 'index'])->name('landing');
+
 
 Route::get('/login', [LoginController::class, 'index'])->name('login');
 Route::post('/login', [LoginController::class, 'authenticate'])->name('login.authenticate');
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+
 
 Route::middleware(['auth','role:admin'])->prefix('admin')->name('admin.')->group(function () {
 
@@ -107,6 +110,14 @@ Route::middleware(['auth','role:owner'])->prefix('owner')->name('owner.')->group
     Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
     Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
     Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+ 
+
+    Route::get('/periode-gaji', [PeriodeGajiController::class, 'index'])->name('periode-gaji.index');
+    Route::get('/periode-gaji/create', [PeriodeGajiController::class, 'create'])->name('periode-gaji.create');
+    Route::post('/periode-gaji', [PeriodeGajiController::class, 'store'])->name('periode-gaji.store');
+    Route::get('/periode-gaji/{id}/edit', [PeriodeGajiController::class, 'edit'])->name('periode-gaji.edit');
+    Route::put('/periode-gaji/{id}', [PeriodeGajiController::class, 'update'])->name('periode-gaji.update');
+    Route::delete('/periode-gaji/{id}', [PeriodeGajiController::class, 'destroy'])->name('periode-gaji.destroy');
 
     Route::prefix('laporan')->name('laporan.')->group(function(){
         Route::get('/order',[LaporanController::class,'order'])
@@ -114,13 +125,15 @@ Route::middleware(['auth','role:owner'])->prefix('owner')->name('owner.')->group
 
         Route::get('/stok',[LaporanController::class,'stok'])
             ->name('stok');
+        
+        Route::get('/gaji', [LaporanController::class, 'gaji'])
+            ->name('gaji');
+
     });
 
-    Route::get('/laporan/order/cetak',[LaporanController::class,'cetakOrder'])
-    ->name('laporan.order.cetak');
-
-    Route::get('/laporan/stok/cetak',[LaporanController::class,'cetakStok'])
-    ->name('laporan.stok.cetak');
+    Route::get('/laporan/order/cetak',[LaporanController::class,'cetakOrder'])->name('laporan.order.cetak');
+    Route::get('/laporan/stok/cetak',[LaporanController::class,'cetakStok']) ->name('laporan.stok.cetak');
+    Route::get('/laporan/gaji/cetak', [LaporanController::class, 'cetakGaji'])->name('laporan.gaji.cetak');
 
     Route::get('/profil-bisnis', [ProfilBisnisController::class, 'index'])->name('profil-bisnis.index');
     Route::put('/profil-bisnis', [ProfilBisnisController::class, 'update'])->name('profil-bisnis.update');

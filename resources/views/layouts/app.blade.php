@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title') | Sistem Informasi Door Smeer</title>
 
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @vite(['resources/css/app.css', 'resources/js/app.js'])    
 </head>
 
 <body class="bg-[#EDF3FB] font-sans">
@@ -22,8 +22,32 @@
 
             @include('layouts.footer')
         </div>
+    </div>
 
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                @if(session('success'))
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Berhasil!',
+                        text: '{!! session('success') !!}',
+                        timer: 3000,
+                        showConfirmButton: false
+                    });
+                @endif
+
+                @if(session('error'))
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal!',
+                        text: '{!! session('error') !!}',
+                        confirmButtonColor: '#3085d6',
+                    });
+                @endif
+            });
+        </script>
 </body>
 
 </html>
