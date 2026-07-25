@@ -12,6 +12,8 @@
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
+@source "../../vendor/mckenziearts/laravel-notify/resources/views/**/*.blade.php";
+
 
 /* ==========================================================
    THEME COLOR

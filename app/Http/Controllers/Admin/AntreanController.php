@@ -19,12 +19,27 @@ class AntreanController extends Controller
     private $qrisStatis="00020101021126610014COM.GO-JEK.WWW01189360091436689735970210G6689735970303UMI51440014ID.CO.QRIS.WWW0215ID10254391372470303UMI5204472253033605802ID5915Lasax Adventure6006PADANG61052511162070703A0163041497";
     public function index()
     {
-        $antrean=Antrean::with([
+        $kendaraan = Antrean::with([
             'order.pelanggan',
             'order.kendaraan',
             'order.layanan',
             'order.karyawan',
-        ])->latest()->paginate(10);
+        ])
+        ->whereNotNull('nomor_antrean')
+        ->whereNotIn('status', ['Selesai', 'Dibatalkan'])
+        ->oldest()
+        ->paginate(10, ['*'], 'kendaraan');
+
+        $karpet = Antrean::with([
+            'order.pelanggan',
+            'order.kendaraan',
+            'order.layanan',
+            'order.karyawan',
+        ])
+        ->whereNull('nomor_antrean')
+        ->whereNotIn('status', ['Selesai', 'Dibatalkan'])
+        ->oldest()
+        ->paginate(10, ['*'], 'karpet');
 
         $busy=Order::whereHas('antrean',function($q){
             $q->where('status','Diproses');
@@ -35,7 +50,7 @@ class AntreanController extends Controller
         $karyawan=Karyawan::whereNotIn('id',$busy)
             ->orderBy('nama')
             ->get();
-        return view('admin.antrean.index',compact('antrean','karyawan'));
+        return view('admin.antrean.index',compact('kendaraan', 'karpet', 'karyawan'));
     }
 
     public function mulai(Request $request,Antrean $antrean)
@@ -89,6 +104,19 @@ class AntreanController extends Controller
 
         return redirect()->route('admin.antrean.index')
             ->with('success','Pembayaran berhasil.');
+    }
+
+    public function batalkan(Antrean $antrean)
+    {
+        if ($antrean->status != 'Menunggu') {
+            return back()->with('error', 'Order yang sudah diproses tidak dapat dibatalkan.');
+        }
+
+        $antrean->update([
+            'status' => 'Dibatalkan',
+        ]);
+
+        return back()->with('success', 'Order berhasil dibatalkan.');
     }
 
     public function generateQris(Antrean $antrean,QrisService $qrisService)

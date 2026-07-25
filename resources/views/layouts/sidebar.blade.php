@@ -56,7 +56,7 @@
                 </li>
                 <li>
                     <a href="{{ route('admin.antrean.index') }}" class="flex items-center gap-3 pl-11 py-2 text-sm hover:bg-[#5AA8D6]">
-                        <i class="fa-solid fa-list-check w-4"></i> Antrean
+                        <i class="fa-solid fa-list-check w-4"></i> Proses Layanan
                     </a>
                 </li>
             </ul>

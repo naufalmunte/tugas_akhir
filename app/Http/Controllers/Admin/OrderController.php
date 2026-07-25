@@ -40,11 +40,24 @@ public function create()
         session('pelanggan_id')
     );
 
+    $sedangDiproses = Antrean::whereNotNull('nomor_antrean')
+    ->where('status', 'Diproses')
+    ->count();
+
+    $menunggu = Antrean::whereNotNull('nomor_antrean')
+        ->where('status', 'Menunggu')
+        ->count();
+
+    $totalAntrean = $sedangDiproses + $menunggu;
+
     $kategori=KategoriLayanan::orderBy('nama_kategori')->get();
 
     return view('admin.order.create',compact(
         'pelanggan',
-        'kategori'
+        'kategori',
+        'sedangDiproses',
+        'menunggu',
+        'totalAntrean'
     ));
 }
 
@@ -60,7 +73,7 @@ public function create()
 
         try{
 
-            $layanan=Layanan::findOrFail($request->layanan_id);
+            $layanan = Layanan::with('kategori')->findOrFail($request->layanan_id);
 
             $order=Order::create([
                 'pelanggan_id'=>$request->pelanggan_id,
@@ -71,18 +84,26 @@ public function create()
                 'metode_pembayaran'=>null
             ]);
 
-            $today=date('Y-m-d');
+            $today = date('Y-m-d');
 
-            $jumlah=Antrean::whereDate('created_at',$today)->count()+1;
+            $nomor = null;
+            $status = 'Menunggu';
 
-            $nomor='A'.str_pad($jumlah,3,'0',STR_PAD_LEFT);
+            // hanya layanan yang membutuhkan kendaraan diberi nomor antrean
+            if ($layanan->kategori->butuh_kendaraan) {
+
+                $jumlah = Antrean::whereDate('created_at', $today)
+                    ->whereNotNull('nomor_antrean')
+                    ->count() + 1;
+
+                $nomor = 'A' . str_pad($jumlah, 3, '0', STR_PAD_LEFT);
+            }
 
             Antrean::create([
-                'order_id'=>$order->id,
-                'nomor_antrean'=>$nomor,
-                'status'=>'Menunggu'
+                'order_id' => $order->id,
+                'nomor_antrean' => $nomor,
+                'status' => $status,
             ]);
-
             DB::commit();
 
             session()->forget('pelanggan_id');
@@ -94,7 +115,7 @@ public function create()
 
             DB::rollBack();
 
-            return back()->withInput()->with('error',$e->getMessage());
+    dd($e->getMessage());
 
         }
     }

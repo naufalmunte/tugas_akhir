@@ -91,6 +91,8 @@ Route::middleware(['auth','role:admin'])->prefix('admin')->name('admin.')->group
     Route::put('/antrean/{antrean}/selesai-cuci',[AntreanController::class,'selesaiCuci'])->name('antrean.selesaiCuci');
     Route::put('/antrean/{antrean}/bayar',[AntreanController::class,'bayar'])->name('antrean.bayar');
     Route::get('/antrean/{antrean}/qris',[AntreanController::class,'generateQris'])->name('antrean.qris');
+    Route::put('/antrean/{antrean}/batalkan', [AntreanController::class, 'batalkan'])
+    ->name('antrean.batalkan');
 
     Route::get('/stok',[StokController::class,'index'])->name('stok.index');
     Route::post('/stok/store',[StokController::class,'store'])->name('stok.store');

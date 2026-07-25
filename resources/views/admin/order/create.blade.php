@@ -96,6 +96,54 @@
 
                 </div>
 
+                <div id="infoAntrean" class="hidden md:col-span-2">
+
+                    <div class="rounded-lg border border-blue-200 bg-blue-50 p-4">
+
+                        <h3 class="mb-3 text-lg font-semibold text-blue-700">
+                            Informasi Layanan
+                        </h3>
+
+                        <div id="infoKendaraan" class="hidden">
+
+                            <div class="grid grid-cols-1 gap-2 md:grid-cols-3">
+
+                                <div>
+                                    <p class="text-sm text-gray-500">Sedang Diproses</p>
+                                    <p class="font-semibold">{{ $sedangDiproses }} Kendaraan</p>
+                                </div>
+
+                                <div>
+                                    <p class="text-sm text-gray-500">Menunggu</p>
+                                    <p class="font-semibold">{{ $menunggu }} Kendaraan</p>
+                                </div>
+
+                                <div>
+                                    <p class="text-sm text-gray-500">Total Antrean Sebelum Anda</p>
+                                    <p class="font-semibold text-blue-700">
+                                        {{ $totalAntrean }} Kendaraan
+                                    </p>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div id="infoKarpet" class="hidden">
+
+                            <p class="text-sm text-gray-600">
+                                Estimasi pengerjaan:
+                            </p>
+
+                            <p id="estimasiKarpet" class="mt-1 text-lg font-semibold text-blue-700">
+                                -
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
             </div>
 
             <div class="mt-8 flex justify-end gap-3">
@@ -113,6 +161,7 @@
 
         </form>
     </div>
+
     <div id="modalKendaraan" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/50">
 
         <div class="w-full max-w-lg rounded-xl bg-white p-6">
@@ -198,6 +247,10 @@
         const layanan = document.getElementById('layanan_id');
         const btnTambah = document.getElementById('btnTambahKendaraan');
         const harga = document.getElementById('harga');
+        const infoAntrean = document.getElementById('infoAntrean');
+        const infoKendaraan = document.getElementById('infoKendaraan');
+        const infoKarpet = document.getElementById('infoKarpet');
+        const estimasiKarpet = document.getElementById('estimasiKarpet');
         kategori.addEventListener('change', function() {
 
             let option = this.options[this.selectedIndex];
@@ -244,10 +297,13 @@
                     data.forEach(function(item) {
 
                         layanan.innerHTML += `
-                <option value="${item.id}" data-harga="${item.harga}">
-                    ${item.nama_layanan}
-                </option>
-            `;
+<option
+    value="${item.id}"
+    data-harga="${item.harga}"
+    data-estimasi="${item.estimasi_menit}">
+    ${item.nama_layanan}
+</option>
+`;
 
                     });
 
@@ -263,6 +319,33 @@
                 harga.value = 'Rp ' + Number(option.dataset.harga).toLocaleString('id-ID');
             } else {
                 harga.value = '';
+            }
+
+            if (!kategori.value) {
+                infoAntrean.classList.add('hidden');
+                return;
+            }
+
+            let kategoriOption = kategori.options[kategori.selectedIndex];
+
+            infoAntrean.classList.remove('hidden');
+
+            if (kategoriOption.dataset.kendaraan == "1") {
+
+                infoKendaraan.classList.remove('hidden');
+                infoKarpet.classList.add('hidden');
+
+            } else {
+
+                infoKarpet.classList.remove('hidden');
+                infoKendaraan.classList.add('hidden');
+
+                let menit = Number(option.dataset.estimasi);
+
+                let hari = Math.ceil(menit / 1440);
+
+                estimasiKarpet.innerHTML = "± " + hari + " Hari";
+
             }
 
         });

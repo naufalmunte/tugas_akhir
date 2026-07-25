@@ -100,6 +100,12 @@
                                             <span
                                                 class="rounded-lg bg-green-100 px-3 py-1 text-xs font-medium text-green-700">Selesai</span>
                                         @break
+
+                                        @case('Dibatalkan')
+                                            <span class="rounded-lg bg-red-100 px-3 py-1 text-xs font-medium text-red-700">
+                                                Dibatalkan
+                                            </span>
+                                        @break
                                     @endswitch
                                 @else
                                     <span class="rounded-lg bg-gray-100 px-3 py-1 text-xs text-gray-500">-</span>
