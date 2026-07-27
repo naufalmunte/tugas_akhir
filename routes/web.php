@@ -10,7 +10,8 @@ use App\Http\Controllers\Admin\KaryawanController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\AntreanController;
 use App\Http\Controllers\Admin\StokController;
-use App\Http\Controllers\Owner\DashboardController;
+use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
+use App\Http\Controllers\Owner\DashboardController as OwnerDashboardController;
 use App\Http\Controllers\Owner\LaporanController;
 use App\Http\Controllers\Owner\ProfilBisnisController;
 use App\Http\Controllers\LandingPageController;
@@ -27,10 +28,8 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
 Route::middleware(['auth','role:admin'])->prefix('admin')->name('admin.')->group(function () {
 
-    Route::get('/dashboard', function () {
-        return view('admin.dashboard');
-    })->name('dashboard');
-
+    Route::get('/dashboard', [AdminDashboardController::class, 'index'])
+    ->name('dashboard');
     Route::get('/pelanggan',[PelangganController::class,'index'])->name('pelanggan.index');
     Route::get('/pelanggan/create',[PelangganController::class,'create'])->name('pelanggan.create');
     Route::post('/pelanggan/store',[PelangganController::class,'store'])->name('pelanggan.store');
@@ -103,8 +102,8 @@ Route::middleware(['auth','role:admin'])->prefix('admin')->name('admin.')->group
 
 Route::middleware(['auth','role:owner'])->prefix('owner')->name('owner.')->group(function(){
 
-    Route::get('/dashboard',[DashboardController::class,'index'])
-        ->name('dashboard');
+   Route::get('/dashboard', [OwnerDashboardController::class, 'index'])
+    ->name('dashboard');
 
     Route::get('/users', [UserController::class, 'index'])->name('users.index');
     Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
