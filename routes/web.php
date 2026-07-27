@@ -112,13 +112,14 @@ Route::middleware(['auth','role:owner'])->prefix('owner')->name('owner.')->group
     Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
     Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
  
-
     Route::get('/periode-gaji', [PeriodeGajiController::class, 'index'])->name('periode-gaji.index');
     Route::get('/periode-gaji/create', [PeriodeGajiController::class, 'create'])->name('periode-gaji.create');
     Route::post('/periode-gaji', [PeriodeGajiController::class, 'store'])->name('periode-gaji.store');
     Route::get('/periode-gaji/{id}/edit', [PeriodeGajiController::class, 'edit'])->name('periode-gaji.edit');
     Route::put('/periode-gaji/{id}', [PeriodeGajiController::class, 'update'])->name('periode-gaji.update');
     Route::delete('/periode-gaji/{id}', [PeriodeGajiController::class, 'destroy'])->name('periode-gaji.destroy');
+    Route::post('/periode-gaji/{id}/proses', [PeriodeGajiController::class, 'proses'])->name('periode-gaji.proses');
+    Route::get('/periode-gaji/{id}', [PeriodeGajiController::class, 'show'])->name('periode-gaji.show');
 
     Route::prefix('laporan')->name('laporan.')->group(function(){
         Route::get('/order',[LaporanController::class,'order'])

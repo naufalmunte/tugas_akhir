@@ -15,6 +15,7 @@ class PeriodeGaji extends Model
         'tahun',
         'bulan',
         'gaji_per_order',
+        'status'
     ];
 
     public function gaji()

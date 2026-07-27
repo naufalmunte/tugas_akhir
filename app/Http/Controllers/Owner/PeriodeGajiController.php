@@ -3,16 +3,16 @@
 namespace App\Http\Controllers\Owner;
 
 use App\Http\Controllers\Controller;
-use App\Models\PeriodeGaji;
 use App\Models\Gaji;
 use App\Models\Order;
+use App\Models\PeriodeGaji;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class PeriodeGajiController extends Controller
 {
     public function index()
-    {   
+    {
         $periodeGaji = PeriodeGaji::with('gaji')
             ->latest()
             ->paginate(10);
@@ -25,7 +25,7 @@ class PeriodeGajiController extends Controller
         return view('owner.periode_gaji.create');
     }
 
-  public function store(Request $request)
+    public function store(Request $request)
     {
         $request->validate([
             'tahun' => 'required|digits:4',
@@ -38,41 +38,108 @@ class PeriodeGajiController extends Controller
             ->exists();
 
         if ($cek) {
-            // Gunakan ->with('error', ...)
             return back()->with('error', 'Periode gaji sudah tersedia.');
         }
 
-        DB::beginTransaction();
+        PeriodeGaji::create([
+            'tahun' => $request->tahun,
+            'bulan' => $request->bulan,
+            'gaji_per_order' => $request->gaji_per_order,
+            'status' => 'Belum Diproses',
+        ]);
 
-        try {
-            $periode = PeriodeGaji::create([
-                'tahun' => $request->tahun,
-                'bulan' => $request->bulan,
-                'gaji_per_order' => $request->gaji_per_order,
-            ]);
+        return redirect()->route('owner.periode-gaji.index')
+            ->with('success', 'Periode gaji berhasil ditambahkan.');
+    }
 
-            $this->generateGaji($periode);
+    public function edit($id)
+    {
+        $periode = PeriodeGaji::findOrFail($id);
 
-            DB::commit();
-
-            // Gunakan ->with('success', ...)
+        if ($periode->status == 'Sudah Diproses') {
             return redirect()->route('owner.periode-gaji.index')
-                ->with('success', 'Periode gaji berhasil ditambahkan.');
-
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+                ->with('error', 'Periode yang sudah diproses tidak dapat diubah.');
         }
+
+        return view('owner.periode_gaji.edit', compact('periode'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $periode = PeriodeGaji::findOrFail($id);
+
+        if ($periode->status == 'Sudah Diproses') {
+            return redirect()->route('owner.periode-gaji.index')
+                ->with('error', 'Periode yang sudah diproses tidak dapat diubah.');
+        }
+
+        $request->validate([
+            'tahun' => 'required|digits:4',
+            'bulan' => 'required',
+            'gaji_per_order' => 'required|numeric|min:1',
+        ]);
+
+        $periode->update([
+            'tahun' => $request->tahun,
+            'bulan' => $request->bulan,
+            'gaji_per_order' => $request->gaji_per_order,
+        ]);
+
+        return redirect()->route('owner.periode-gaji.index')
+            ->with('success', 'Periode gaji berhasil diperbarui.');
     }
 
     public function destroy($id)
     {
         $periode = PeriodeGaji::findOrFail($id);
 
+        if ($periode->status == 'Sudah Diproses') {
+            return redirect()->route('owner.periode-gaji.index')
+                ->with('error', 'Periode yang sudah diproses tidak dapat dihapus.');
+        }
+
         $periode->delete();
 
         return redirect()->route('owner.periode-gaji.index')
             ->with('success', 'Periode gaji berhasil dihapus.');
+    }
+
+    public function proses($id)
+    {
+        $periode = PeriodeGaji::findOrFail($id);
+
+        if ($periode->status == 'Sudah Diproses') {
+            return back()->with('error', 'Periode gaji sudah diproses.');
+        }
+
+        DB::beginTransaction();
+
+        try {
+
+            $this->generateGaji($periode);
+
+            $periode->update([
+                'status' => 'Sudah Diproses',
+            ]);
+
+            DB::commit();
+
+            return redirect()->route('owner.periode-gaji.index')
+                ->with('success', 'Perhitungan gaji berhasil diproses.');
+
+        } catch (\Exception $e) {
+
+            DB::rollBack();
+
+            return back()->with('error', $e->getMessage());
+        }
+    }
+
+    public function show($id)
+    {
+        $periode = PeriodeGaji::with('gaji.karyawan')->findOrFail($id);
+
+        return view('owner.periode_gaji.show', compact('periode'));
     }
 
     private function generateGaji(PeriodeGaji $periode)
