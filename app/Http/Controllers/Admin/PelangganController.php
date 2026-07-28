@@ -15,10 +15,19 @@ class PelangganController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $pelanggan=Pelanggan::oldest()->paginate(10);
-        return view('admin.pelanggan.index',compact('pelanggan'));
+        $query = Pelanggan::query();
+
+        if ($request->filled('search')) {
+            $query->where('nama', 'like', '%' . $request->search . '%')
+                ->orWhere('no_hp', 'like', '%' . $request->search . '%')
+                ->orWhere('alamat', 'like', '%' . $request->search . '%');
+        }
+
+        $pelanggan = $query->latest()->paginate(10)->withQueryString();
+
+        return view('admin.pelanggan.index', compact('pelanggan'));
     }
 
     /**
@@ -36,9 +45,14 @@ class PelangganController extends Controller
     {
         $request->validate([
             'nama'=>'required|max:100',
-            'no_hp'=>'required|max:20',
+            'no_hp' => 'required|digits_between:10,15|unique:pelanggans,no_hp',
             'alamat'=>'nullable'
-        ]);
+        ],
+        [
+            'no_hp.unique'=>'Nomor HP sudah terdaftar',
+            'no_hp.digits_between'=>'Nomor HP tidak valid'
+        ]
+        );
 
         $pelanggan=Pelanggan::create([
             'nama'=>$request->nama,
@@ -88,13 +102,19 @@ class PelangganController extends Controller
      * Update the specified resource in storage.
      */
     public function update(Request $request,$id){
-        $request->validate([
-            'nama'=>'required|max:100',
-            'no_hp'=>'required|max:20',
-            'alamat'=>'nullable'
-        ]);
 
         $pelanggan=Pelanggan::findOrFail($id);
+
+        $request->validate([
+            'nama'=>'required|max:100',
+            'no_hp' => 'required|digits_between:10,15|unique:pelanggans,no_hp,' . $pelanggan->id,
+            'alamat'=>'nullable'
+        ],
+        [
+            'nama.required'=>'Nama harus diisi',
+            'no_hp.unique'=>'Nomor HP sudah terdaftar',
+            'no_hp.digits_between'=>'Nomor HP tidak valid'
+        ]);
 
         $pelanggan->update([
             'nama'=>$request->nama,

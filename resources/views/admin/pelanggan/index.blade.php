@@ -11,9 +11,15 @@
 
             <div class="flex flex-col sm:flex-row items-center gap-3 w-full md:w-auto">
                 <div class="relative w-full sm:w-auto">
-                    <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
-                    <input type="text" id="searchPelanggan" placeholder="Cari pelanggan..."
-                        class="w-full sm:w-72 rounded-lg border border-gray-300 py-2 pl-10 pr-4 focus:border-[#5AA8D6] focus:outline-none">
+                    <form id="searchForm" method="GET" action="{{ route('admin.pelanggan.index') }}">
+                        <div class="relative w-full sm:w-auto">
+                            <i
+                                class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                            <input type="text" id="searchPelanggan" name="search" value="{{ request('search') }}"
+                                placeholder="Cari pelanggan..."
+                                class="w-full sm:w-72 rounded-lg border border-gray-300 py-2 pl-10 pr-4 focus:border-[#5AA8D6] focus:outline-none">
+                        </div>
+                    </form>
                 </div>
                 <a href="{{ route('admin.pelanggan.create') }}"
                     class="flex w-full sm:w-auto justify-center items-center gap-2 rounded-lg bg-[#5AA8D6] px-4 py-2 text-white transition hover:bg-[#3A4163]">
@@ -38,7 +44,7 @@
                 <tbody id="pelangganTable">
                     @forelse($pelanggan as $item)
                         <tr class="pelanggan-row hover:bg-gray-50">
-                            <td class="border px-4 py-3 text-center">{{ $loop->iteration }}</td>
+                            <td class="border px-4 py-3 text-center">{{ $pelanggan->firstItem() + $loop->index }}</td>
                             <td class="border px-4 py-3 font-medium">{{ $item->nama }}</td>
                             <td class="border px-4 py-3">{{ $item->no_hp }}</td>
                             <td class="border px-4 py-3 text-gray-600">{{ $item->alamat }}</td>
@@ -81,6 +87,9 @@
                 </tbody>
             </table>
         </div>
+        <div class="mt-4">
+            {{ $pelanggan->links() }}
+        </div>
     </div>
 
     <div id="qrModal"
@@ -117,6 +126,16 @@
     </div>
 
     <script>
+        let timer;
+
+        document.getElementById('searchPelanggan').addEventListener('input', function() {
+            clearTimeout(timer);
+
+            timer = setTimeout(function() {
+                document.getElementById('searchForm').submit();
+            }, 200);
+        });
+
         document.querySelectorAll('.form-delete').forEach(form => {
             form.addEventListener('submit', function(e) {
                 e.preventDefault();
@@ -137,14 +156,6 @@
             });
         });
 
-        document.getElementById('searchPelanggan').addEventListener('keyup', function() {
-            let keyword = this.value.toLowerCase();
-            document.querySelectorAll('.pelanggan-row').forEach(function(row) {
-                let text = row.innerText.toLowerCase();
-                row.style.display = text.includes(keyword) ? '' : 'none';
-            });
-        });
-
         function showQr(image, nama, hp) {
             document.getElementById('modalQrImage').src = image;
             document.getElementById('modalNama').innerText = nama;
@@ -153,7 +164,9 @@
 
             let nomor = hp.replace(/^0/, '62');
             let pesan =
-                `Halo Bapak/Ibu ${nama},\n\nTerima kasih telah menggunakan layanan Door Smeer 24 Jam.\n\nQR Code pelanggan Anda telah berhasil dibuat.\n\nSilakan unduh QR Code melalui sistem dan lampirkan pada chat ini agar dapat disimpan dan digunakan saat melakukan layanan berikutnya.\n\nTerima kasih.`;
+                `Halo Bapak/Ibu ${nama},\n\nTerima kasih telah menggunakan layanan Door Smeer 24 Jam.\n\nQR Code pelanggan Anda telah
+    berhasil dibuat.\n\nSilakan unduh QR Code melalui sistem dan lampirkan pada chat ini agar dapat disimpan dan digunakan
+    saat melakukan layanan berikutnya.\n\nTerima kasih.`;
 
             document.getElementById('waButton').href = `https://wa.me/${nomor}?text=${encodeURIComponent(pesan)}`;
             document.getElementById('qrModal').classList.remove('hidden');
