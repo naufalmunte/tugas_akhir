@@ -1,15 +1,20 @@
 @extends('layouts.app')
-
 @section('title', 'Dashboard')
-
 @section('page-title', 'Dashboard')
 
 @section('content')
+    <div class="mt-2 rounded-xl bg-white p-6 shadow-sm">
 
-    {{-- Baris 1 --}}
-    <div class="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-4">
+        <h2 class="mb-3 text-lg font-semibold text-[#3A4163]">
+            Selamat Datang
+        </h2>
 
-        {{-- Total Pelanggan --}}
+        <p class="leading-7 text-gray-600">
+            Selamat datang admin
+        </p>
+
+    </div>
+    <div class="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-4">
         <div class="rounded-xl bg-white p-6 shadow-sm">
             <div class="flex items-center justify-between">
                 <div>
@@ -24,8 +29,6 @@
                 </div>
             </div>
         </div>
-
-        {{-- Order Hari Ini --}}
         <div class="rounded-xl bg-white p-6 shadow-sm">
             <div class="flex items-center justify-between">
                 <div>
@@ -40,8 +43,6 @@
                 </div>
             </div>
         </div>
-
-        {{-- Proses Layanan Aktif --}}
         <div class="rounded-xl bg-white p-6 shadow-sm">
             <div class="flex items-center justify-between">
                 <div>
@@ -56,8 +57,6 @@
                 </div>
             </div>
         </div>
-
-        {{-- Total Karyawan --}}
         <div class="rounded-xl bg-white p-6 shadow-sm">
             <div class="flex items-center justify-between">
                 <div>
@@ -75,10 +74,7 @@
 
     </div>
 
-    {{-- Baris 2 --}}
     <div class="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-4">
-
-        {{-- Kendaraan Diproses --}}
         <div class="rounded-xl bg-white p-6 shadow-sm">
             <div class="flex items-center justify-between">
                 <div>
@@ -94,7 +90,6 @@
             </div>
         </div>
 
-        {{-- Kendaraan Menunggu --}}
         <div class="rounded-xl bg-white p-6 shadow-sm">
             <div class="flex items-center justify-between">
                 <div>
@@ -110,7 +105,6 @@
             </div>
         </div>
 
-        {{-- Order Karpet Aktif --}}
         <div class="rounded-xl bg-white p-6 shadow-sm">
             <div class="flex items-center justify-between">
                 <div>
@@ -126,7 +120,6 @@
             </div>
         </div>
 
-        {{-- Stok Menipis --}}
         <div class="rounded-xl bg-white p-6 shadow-sm">
             <div class="flex items-center justify-between">
                 <div>
@@ -141,20 +134,86 @@
                 </div>
             </div>
         </div>
-
     </div>
 
-    {{-- Informasi --}}
     <div class="mt-6 rounded-xl bg-white p-6 shadow-sm">
-
-        <h2 class="mb-3 text-lg font-semibold text-[#3A4163]">
-            Selamat Datang
-        </h2>
-
-        <p class="leading-7 text-gray-600">
-           Selamat datang admin
-        </p>
-
+        <div class="mb-6 flex items-center justify-between">
+            <div>
+                <h2 class="text-lg font-semibold text-[#3A4163]">
+                    Grafik Order
+                </h2>
+                <p class="text-sm text-gray-500">
+                    Grafik jumlah order berdasarkan bulan.
+                </p>
+            </div>
+            <select id="tahunFilter"
+                class="rounded-lg border border-gray-300 px-4 py-2 focus:border-[#5AA8D6] focus:outline-none">
+                @foreach ($tahunList as $tahun)
+                    <option value="{{ $tahun }}" {{ $tahun == now()->year ? 'selected' : '' }}>
+                        {{ $tahun }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
+        <canvas id="orderChart" height="90"></canvas>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script>
+        let chart;
+        loadChart($('#tahunFilter').val());
+        $('#tahunFilter').change(function() {
+            loadChart($(this).val());
+        });
+
+        function loadChart(tahun) {
+            $.get("{{ route('admin.dashboard.chart') }}", {
+                tahun: tahun
+            }, function(result) {
+                if (chart) {
+                    chart.destroy();
+                }
+
+                chart = new Chart(document.getElementById('orderChart'), {
+                    type: 'line',
+                    data: {
+                        labels: [
+                            'Jan',
+                            'Feb',
+                            'Mar',
+                            'Apr',
+                            'Mei',
+                            'Jun',
+                            'Jul',
+                            'Agu',
+                            'Sep',
+                            'Okt',
+                            'Nov',
+                            'Des'
+                        ],
+
+                        datasets: [{
+                            label: 'Jumlah Order',
+                            data: result,
+                            borderColor: '#5AA8D6',
+                            backgroundColor: 'rgba(90,168,214,.2)',
+                            fill: true,
+                            tension: .4
+                        }]
+                    },
+
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        }
+                    }
+                });
+            });
+        }
+    </script>
 
 @endsection

@@ -30,6 +30,9 @@ Route::middleware(['auth','role:admin'])->prefix('admin')->name('admin.')->group
 
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])
     ->name('dashboard');
+    Route::get('/dashboard/chart-order', [AdminDashboardController::class, 'chartOrder'])
+    ->name('dashboard.chart');
+
     Route::get('/pelanggan',[PelangganController::class,'index'])->name('pelanggan.index');
     Route::get('/pelanggan/create',[PelangganController::class,'create'])->name('pelanggan.create');
     Route::post('/pelanggan/store',[PelangganController::class,'store'])->name('pelanggan.store');
@@ -104,6 +107,9 @@ Route::middleware(['auth','role:owner'])->prefix('owner')->name('owner.')->group
 
    Route::get('/dashboard', [OwnerDashboardController::class, 'index'])
     ->name('dashboard');
+
+    Route::get('/dashboard/chart-order', [OwnerDashboardController::class, 'chartOrder'])
+    ->name('dashboard.chart');
 
     Route::get('/users', [UserController::class, 'index'])->name('users.index');
     Route::get('/users/create', [UserController::class, 'create'])->name('users.create');

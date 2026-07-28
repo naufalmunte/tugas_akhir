@@ -3,11 +3,13 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 use App\Models\Antrean;
 use App\Models\Karyawan;
 use App\Models\Order;
 use App\Models\Pelanggan;
 use App\Models\Stok;
+use Carbon\Carbon;
 
 class DashboardController extends Controller
 {
@@ -43,6 +45,11 @@ class DashboardController extends Controller
 
         $stokMenipis = Stok::whereColumn('stok', '<=', 'stok_minimum')->count();
 
+        $tahunList = Order::selectRaw('YEAR(created_at) as tahun')
+            ->distinct()
+            ->orderBy('tahun', 'desc')
+            ->pluck('tahun');
+
         return view('admin.dashboard', compact(
             'totalPelanggan',
             'orderHariIni',
@@ -51,7 +58,21 @@ class DashboardController extends Controller
             'kendaraanDiproses',
             'kendaraanMenunggu',
             'karpetAktif',
-            'stokMenipis'
+            'stokMenipis',
+            'tahunList'
         ));
     }
+
+    public function chartOrder(Request $request)
+    {
+        $tahun = $request->tahun ?? now()->year;
+        $data = [];
+
+        for ($bulan = 1; $bulan <= 12; $bulan++) {
+            $data[] = Order::whereYear('created_at', $tahun)
+                ->whereMonth('created_at', $bulan)
+                ->count();
+        }return response()->json($data);
+    }
+    
 }

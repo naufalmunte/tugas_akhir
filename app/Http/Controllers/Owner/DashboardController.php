@@ -7,6 +7,8 @@ use App\Models\Antrean;
 use App\Models\Order;
 use App\Models\Pelanggan;
 use App\Models\Stok;
+use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class DashboardController extends Controller
 {
@@ -40,6 +42,11 @@ class DashboardController extends Controller
             ]
         )->count();
 
+        $tahunList = Order::selectRaw('YEAR(created_at) as tahun')
+            ->distinct()
+            ->orderBy('tahun', 'desc')
+            ->pluck('tahun');
+
         return view(
             'owner.dashboard',
             compact(
@@ -48,8 +55,21 @@ class DashboardController extends Controller
                 'pendapatan',
                 'stokMenipis',
                 'orderHariIni',
-                'antreanAktif'
+                'antreanAktif',
+                'tahunList'
             )
         );
+    }
+
+    public function chartOrder(Request $request)
+    {
+        $tahun = $request->tahun ?? now()->year;
+        $data = [];
+
+        for ($bulan = 1; $bulan <= 12; $bulan++) {
+            $data[] = Order::whereYear('created_at', $tahun)
+                ->whereMonth('created_at', $bulan)
+                ->count();
+        }return response()->json($data);
     }
 }
