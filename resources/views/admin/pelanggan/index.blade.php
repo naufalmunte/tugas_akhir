@@ -164,10 +164,7 @@
 
             let nomor = hp.replace(/^0/, '62');
             let pesan =
-                `Halo Bapak/Ibu ${nama},\n\nTerima kasih telah menggunakan layanan Door Smeer 24 Jam.\n\nQR Code pelanggan Anda telah
-    berhasil dibuat.\n\nSilakan unduh QR Code melalui sistem dan lampirkan pada chat ini agar dapat disimpan dan digunakan
-    saat melakukan layanan berikutnya.\n\nTerima kasih.`;
-
+                `Halo Bapak/Ibu ${nama},\n\nTerima kasih telah menggunakan layanan Door Smeer 24 Jam.\n\nQR Code pelanggan Anda telah berhasil dibuat.\n\nSilakan unduh QR Code melalui sistem dan lampirkan pada chat ini agar dapat disimpan dan digunakan saat melakukan layanan berikutnya.\n\nTerima kasih.`;
             document.getElementById('waButton').href = `https://wa.me/${nomor}?text=${encodeURIComponent(pesan)}`;
             document.getElementById('qrModal').classList.remove('hidden');
             document.getElementById('qrModal').classList.add('flex');

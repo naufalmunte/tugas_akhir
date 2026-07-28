@@ -55,10 +55,12 @@ Route::middleware(['auth','role:admin'])->prefix('admin')->name('admin.')->group
     Route::delete('/layanan/{id}',[LayananController::class,'destroy'])->name('layanan.destroy');
 
     Route::get('/kendaraan',[KendaraanController::class,'index'])->name('kendaraan.index');
+    Route::get('/kendaraan/create', [KendaraanController::class, 'create'])->name('kendaraan.create');
+    Route::post('/kendaraan', [KendaraanController::class, 'store'])->name('kendaraan.store');
     Route::get('/kendaraan/edit/{id}',[KendaraanController::class,'edit'])->name('kendaraan.edit');
     Route::put('/kendaraan/update/{id}',[KendaraanController::class,'update'])->name('kendaraan.update');
     Route::delete('/kendaraan/delete/{id}',[KendaraanController::class,'destroy'])->name('kendaraan.destroy');
-
+    Route::post('/kendaraan/scan-qr',[KendaraanController::class,'scanQR'])->name('kendaraan.scanQR');
 
     Route::get('/karyawan',[KaryawanController::class,'index'])->name('karyawan.index');
     Route::get('/karyawan/create',[KaryawanController::class,'create'])->name('karyawan.create');
