@@ -8,10 +8,19 @@ use Illuminate\Http\Request;
 
 class KaryawanController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $karyawan=Karyawan::latest()->get();
-        return view('admin.karyawan.index',compact('karyawan'));
+        $search = $request->search;
+
+        $karyawan = Karyawan::when($search, function ($query) use ($search) {
+                $query->where('nama', 'like', "%{$search}%")
+                    ->orWhere('no_hp', 'like', "%{$search}%");
+            })
+            ->latest()
+            ->paginate(1)
+            ->withQueryString();
+
+        return view('admin.karyawan.index', compact('karyawan'));
     }
 
     public function create()
@@ -23,7 +32,10 @@ class KaryawanController extends Controller
     {
         $request->validate([
             'nama'=>'required|max:100',
-            'no_hp'=>'required|max:20'
+            'no_hp' => 'required|max:20|unique:karyawan,no_hp',
+        ],
+        [
+            'no_hp.unique' => 'Nomor HP sudah terdaftar.',
         ]);
 
         Karyawan::create([
@@ -46,7 +58,10 @@ class KaryawanController extends Controller
     {
         $request->validate([
             'nama'=>'required|max:100',
-            'no_hp'=>'required|max:20'
+            'no_hp' => 'required|max:20|unique:karyawan,no_hp,' . $id,
+        ],
+        [
+            'no_hp.unique' => 'Nomor HP sudah terdaftar.',
         ]);
 
         $karyawan=Karyawan::findOrFail($id);

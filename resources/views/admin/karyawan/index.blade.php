@@ -11,11 +11,14 @@
             </div>
 
             <div class="flex flex-col sm:flex-row items-center gap-3 w-full md:w-auto">
-                <div class="relative w-full sm:w-auto">
-                    <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
-                    <input type="text" id="searchKaryawan" placeholder="Cari karyawan..."
-                        class="w-full sm:w-72 rounded-lg border border-gray-300 py-2 pl-10 pr-4 focus:border-[#5AA8D6] focus:outline-none">
-                </div>
+                <form id="formSearch" method="GET">
+                    <div class="relative">
+                        <input id="search" type="text" name="search" value="{{ request('search') }}"
+                            placeholder="Cari nama atau no. HP..."
+                            class="w-full sm:w-80 rounded-lg border border-gray-300 pl-10 pr-4 py-2 focus:ring-[#5AA8D6] focus:border-[#5AA8D6]">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3 top-3 text-gray-400"></i>
+                    </div>
+                </form>
                 <a href="{{ route('admin.karyawan.create') }}"
                     class="flex w-full sm:w-auto justify-center items-center gap-2 rounded-lg bg-[#5AA8D6] px-4 py-2 text-white transition hover:bg-[#3A4163]">
                     <i class="fa-solid fa-plus"></i>
@@ -38,7 +41,7 @@
                 <tbody id="karyawanTable">
                     @forelse($karyawan as $item)
                         <tr class="karyawan-row hover:bg-gray-50">
-                            <td class="border px-4 py-3 text-center">{{ $loop->iteration }}</td>
+                            <td class="border px-4 py-3 text-center">{{ $karyawan->firstItem() + $loop->index }}</td>
                             <td class="border px-4 py-3 font-medium text-gray-800">{{ $item->nama }}</td>
                             <td class="border px-4 py-3 text-gray-600">{{ $item->no_hp }}</td>
                             <td class="border px-4 py-3">
@@ -68,15 +71,23 @@
                 </tbody>
             </table>
         </div>
+        @if ($karyawan->hasPages())
+            <div class="mt-6">
+                {{ $karyawan->links() }}
+            </div>
+        @endif
     </div>
 
     <script>
-        document.getElementById('searchKaryawan').addEventListener('keyup', function() {
-            let keyword = this.value.toLowerCase();
-            document.querySelectorAll('.karyawan-row').forEach(function(row) {
-                let text = row.innerText.toLowerCase();
-                row.style.display = text.includes(keyword) ? '' : 'none';
-            });
+        const search = document.getElementById('search');
+        const form = document.getElementById('formSearch');
+
+        let timeout;
+        search.addEventListener('input', function() {
+            clearTimeout(timeout);
+            timeout = setTimeout(function() {
+                form.requestSubmit();
+            }, 300);
         });
 
         document.querySelectorAll('.form-delete').forEach(form => {
