@@ -23,9 +23,14 @@ class KategoriLayananController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nama_kategori'=>'required|max:100',
+            'nama_kategori'=>'required|max:100|unique:kategori_layanan,nama_kategori',
             'deskripsi'=>'nullable'
-        ]);
+        ],
+        [
+            'nama_kategori.required'=>'Nama kategori layanan harus diisi.',
+            'nama_kategori.unique'=>'Nama kategori layanan sudah ada.',
+        ]
+        );
 
         KategoriLayanan::create([
             'nama_kategori'=>$request->nama_kategori,
@@ -44,7 +49,7 @@ class KategoriLayananController extends Controller
     public function update(Request $request,$id)
     {
         $request->validate([
-            'nama_kategori'=>'required|max:100',
+            'nama_kategori'=>'required|max:100|unique:kategori_layanan,nama_kategori,'.$id,
             'deskripsi'=>'nullable'
         ]);
 
