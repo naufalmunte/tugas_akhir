@@ -2,21 +2,24 @@
 
 @section('title', 'Dashboard Owner')
 
+@section('page-title', 'Dashboard')
+
 @section('content')
 
-    <div class="mb-6">
 
-        <h1 class="text-2xl font-semibold text-gray-800">
-            Dashboard Owner
-        </h1>
+    <div class="mt-2 rounded-xl bg-white p-6 shadow-sm">
 
-        <p class="mt-1 text-sm text-gray-500">
-            Ringkasan informasi sistem Door Smeer.
+        <h2 class="mb-3 text-lg font-semibold text-[#3A4163]">
+            Selamat Datang
+        </h2>
+
+        <p class="leading-7 text-gray-600">
+            Selamat datang Owner
         </p>
 
     </div>
 
-    <div class="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
+    <div class="grid grid-cols-1 gap-6 mt-6 md:grid-cols-2 xl:grid-cols-3">
 
         <div class="rounded-xl bg-white p-6 shadow-sm">
             <div class="flex items-center justify-between">

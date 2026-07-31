@@ -71,7 +71,6 @@
 
             <button type="submit"
                 class="rounded-lg bg-[#5AA8D6] px-5 py-2 text-white transition hover:bg-[#3A4163]">
-                <i class="fa-solid fa-floppy-disk mr-2"></i>
                 Perbarui
             </button>
         </div>

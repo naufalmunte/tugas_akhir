@@ -37,6 +37,10 @@ class UserController extends Controller
             'username' => 'required|string|max:255|unique:users,username',
             'password' => 'required|string|min:8|confirmed',
             'role' => 'required|in:admin,owner',
+        ], [
+            'username.unique' => 'Username sudah terdaftar.',
+            'password.confirmed' => 'Password tidak cocok.',
+            'password.min' => 'Password minimal 8 karakter.',
         ]);
 
         User::create([
@@ -89,7 +93,7 @@ class UserController extends Controller
     {
         $user->delete();
 
-        return redirect()->route('users.index')
+        return redirect()->route('owner.users.index')
             ->with('success', 'Data user berhasil dihapus.');
     }
 }

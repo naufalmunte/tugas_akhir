@@ -18,7 +18,6 @@
 
                 <a href="{{ route('owner.users.create') }}"
                     class="flex w-full sm:w-auto justify-center items-center gap-2 rounded-lg bg-[#5AA8D6] px-4 py-2 text-white transition hover:bg-[#3A4163]">
-                    <i class="fa-solid fa-plus"></i>
                     <span>Tambah User</span>
                 </a>
             </div>
