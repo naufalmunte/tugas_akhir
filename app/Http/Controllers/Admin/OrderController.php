@@ -27,61 +27,73 @@ class OrderController extends Controller
         return view('admin.order.index',compact('orders'));
     }
 
-public function create()
-{
-    if(!session()->has('pelanggan_id')){
+    public function create()
+    {
+        if(!session()->has('pelanggan_id')){
 
-        return redirect()->route('admin.order.index')
-            ->with('error','Silakan scan QR Member terlebih dahulu.');
+            return redirect()->route('admin.order.index')
+                ->with('error','Silakan scan QR Member terlebih dahulu.');
 
-    }
+        }
 
-    $pelanggan=Pelanggan::findOrFail(
-        session('pelanggan_id')
-    );
+        $pelanggan=Pelanggan::findOrFail(
+            session('pelanggan_id')
+        );
 
-    $sedangDiproses = Antrean::whereNotNull('nomor_antrean')
-    ->where('status', 'Diproses')
-    ->count();
-
-    $menunggu = Antrean::whereNotNull('nomor_antrean')
-        ->where('status', 'Menunggu')
+        $sedangDiproses = Antrean::whereNotNull('nomor_antrean')
+        ->where('status', 'Diproses')
         ->count();
 
-    $totalAntrean = $sedangDiproses + $menunggu;
+        $menunggu = Antrean::whereNotNull('nomor_antrean')
+            ->where('status', 'Menunggu')
+            ->count();
 
-    $kategori=KategoriLayanan::orderBy('nama_kategori')->get();
+        $totalAntrean = $sedangDiproses + $menunggu;
 
-    return view('admin.order.create',compact(
-        'pelanggan',
-        'kategori',
-        'sedangDiproses',
-        'menunggu',
-        'totalAntrean'
-    ));
-}
+        $kategori=KategoriLayanan::orderBy('nama_kategori')->get();
+
+        return view('admin.order.create',compact(
+            'pelanggan',
+            'kategori',
+            'sedangDiproses',
+            'menunggu',
+            'totalAntrean'
+        ));
+    }
 
     public function store(Request $request)
     {
-        $request->validate([
-            'pelanggan_id'=>'required|exists:pelanggans,id',
-            'layanan_id'=>'required|exists:layanan,id',
-            'kendaraan_id'=>'nullable|exists:kendaraan,id'
+            $request->validate([
+            'pelanggan_id' => 'required|exists:pelanggans,id',
+            'layanan_id' => 'required|exists:layanan,id',
+        ]);
+
+        $layanan = Layanan::with('kategori')->findOrFail($request->layanan_id);
+
+        $rules = [];
+
+        if ($layanan->kategori->butuh_kendaraan) {
+            $rules['kendaraan_id'] = 'required|exists:kendaraan,id';
+        } else {
+            $rules['kendaraan_id'] = 'nullable|exists:kendaraan,id';
+        }
+
+        $request->validate($rules, [
+            'kendaraan_id.required' => 'Kendaraan wajib dipilih.',
+            'kendaraan_id.exists' => 'Kendaraan tidak ditemukan.'
         ]);
 
         DB::beginTransaction();
 
-        try{
+        try {
 
-            $layanan = Layanan::with('kategori')->findOrFail($request->layanan_id);
-
-            $order=Order::create([
-                'pelanggan_id'=>$request->pelanggan_id,
-                'kendaraan_id'=>$request->kendaraan_id,
-                'layanan_id'=>$request->layanan_id,
-                'harga'=>$layanan->harga,
-                'karyawan_id'=>null,
-                'metode_pembayaran'=>null
+            $order = Order::create([
+                'pelanggan_id' => $request->pelanggan_id,
+                'kendaraan_id' => $request->kendaraan_id,
+                'layanan_id' => $request->layanan_id,
+                'harga' => $layanan->harga,
+                'karyawan_id' => null,
+                'metode_pembayaran' => null
             ]);
 
             $today = date('Y-m-d');
@@ -104,18 +116,19 @@ public function create()
                 'nomor_antrean' => $nomor,
                 'status' => $status,
             ]);
+
             DB::commit();
 
             session()->forget('pelanggan_id');
 
             return redirect()->route('admin.order.index')
-    ->with('success','Order berhasil dibuat.');
+                ->with('success', 'Order berhasil dibuat.');
 
-        }catch(\Exception $e){
+        } catch (\Exception $e) {
 
             DB::rollBack();
 
-    dd($e->getMessage());
+            dd($e->getMessage());
 
         }
     }
@@ -129,9 +142,14 @@ public function create()
         return response()->json($layanan);
     }
 
-    public function getKendaraan($pelanggan)
+    public function getKendaraan(Request $request, $pelanggan)
     {
-        $kendaraan=Kendaraan::where('pelanggan_id',$pelanggan)
+        $query = Kendaraan::where('pelanggan_id', $pelanggan);
+
+        if ($request->filled('jenis')) {
+            $query->where('jenis_kendaraan', $request->jenis);
+        }
+        $kendaraan = $query
             ->orderBy('plat_nomor')
             ->get();
 
@@ -139,44 +157,44 @@ public function create()
     }
 
    public function getPelanggan($id)
-{
-    $pelanggan=Pelanggan::find($id);
+    {
+        $pelanggan=Pelanggan::find($id);
 
-    if(!$pelanggan){
+        if(!$pelanggan){
+            return response()->json([
+                'success'=>false
+            ]);
+        }
+
         return response()->json([
-            'success'=>false
+            'success'=>true,
+            'data'=>[
+                'id'=>$pelanggan->id,
+                'nama'=>$pelanggan->nama,
+                'no_hp'=>$pelanggan->no_hp
+            ]
         ]);
     }
 
-    return response()->json([
-        'success'=>true,
-        'data'=>[
-            'id'=>$pelanggan->id,
-            'nama'=>$pelanggan->nama,
-            'no_hp'=>$pelanggan->no_hp
-        ]
-    ]);
-}
+    public function scanQr(Request $request)
+    {
+        $pelanggan=Pelanggan::find($request->pelanggan_id);
 
-public function scanQr(Request $request)
-{
-    $pelanggan=Pelanggan::find($request->pelanggan_id);
+        if(!$pelanggan){
 
-    if(!$pelanggan){
+            return response()->json([
+                'success'=>false
+            ]);
 
-        return response()->json([
-            'success'=>false
+        }
+
+        session([
+            'pelanggan_id'=>$pelanggan->id
         ]);
 
+        return response()->json([
+            'success'=>true,
+            'redirect'=>route('admin.order.create')
+        ]);
     }
-
-    session([
-        'pelanggan_id'=>$pelanggan->id
-    ]);
-
-    return response()->json([
-        'success'=>true,
-        'redirect'=>route('admin.order.create')
-    ]);
-}
 }

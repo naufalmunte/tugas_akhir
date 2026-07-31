@@ -41,42 +41,44 @@ class AntreanController extends Controller
         ->oldest()
         ->paginate(10, ['*'], 'karpet');
 
-        $busy=Order::whereHas('antrean',function($q){
-            $q->where('status','Diproses');
-        })
-        ->whereNotNull('karyawan_id')
-        ->pluck('karyawan_id');
+        $karyawan = Karyawan::orderBy('nama')->get();
 
-        $karyawan=Karyawan::whereNotIn('id',$busy)
-            ->orderBy('nama')
-            ->get();
         return view('admin.antrean.index',compact('kendaraan', 'karpet', 'karyawan'));
     }
 
-    public function mulai(Request $request,Antrean $antrean)
+    public function mulai(Request $request, Antrean $antrean)
     {
         $request->validate([
-            'karyawan_id'=>'required|exists:karyawan,id'
+            'karyawan_id' => 'required|exists:karyawan,id'
         ]);
 
-        $dipakai=Order::where('karyawan_id',$request->karyawan_id)
-            ->whereHas('antrean',function($q){
-                $q->where('status','Diproses');
-            })
-            ->exists();
+        $antrean->load('order.layanan.kategori');
 
-        if($dipakai){
-            return back()->with('error','Karyawan sedang mengerjakan order lain.');
+        if ($antrean->order->layanan->kategori->butuh_kendaraan) {
+
+            $dipakai = Order::where('karyawan_id', $request->karyawan_id)
+                ->whereHas('antrean', function ($q) {
+                    $q->where('status', 'Diproses');
+                })
+                ->whereHas('layanan.kategori', function ($q) {
+                    $q->where('butuh_kendaraan', true);
+                })
+                ->exists();
+
+            if ($dipakai) {
+                return back()->with('error', 'Karyawan sedang mengerjakan kendaraan lain.');
+            }
         }
+
         $antrean->order->update([
-            'karyawan_id'=>$request->karyawan_id
+            'karyawan_id' => $request->karyawan_id
         ]);
 
         $antrean->update([
-            'status'=>'Diproses'
+            'status' => 'Diproses'
         ]);
 
-        return back()->with('success','Pengerjaan dimulai.');
+        return back()->with('success', 'Pengerjaan dimulai.');
     }
 
     public function selesaiCuci(Antrean $antrean)

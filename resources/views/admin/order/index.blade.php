@@ -3,7 +3,6 @@
 
 @section('content')
     <div class="rounded-xl bg-white p-6 shadow-sm">
-        <!-- Header: flex-col di HP, flex-row di Desktop -->
         <div class="mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
                 <h1 class="heading text-2xl font-semibold text-gray-800">Data Order</h1>
@@ -12,17 +11,10 @@
 
             <button type="button" id="btnScan"
                 class="w-full md:w-auto flex justify-center items-center rounded-lg bg-[#5AA8D6] px-4 py-2 text-white hover:bg-[#3A4163] transition">
-                <i class="fa-solid fa-qrcode mr-2"></i> Scan QR Member
+                <i class="fa-solid fa-qrcode mr-2"></i> Buat Order
             </button>
         </div>
 
-        @if (session('success'))
-            <div class="mb-5 rounded-lg bg-green-100 px-4 py-3 text-green-700">
-                {{ session('success') }}
-            </div>
-        @endif
-
-        <!-- Tabel Data Order (Diselaraskan) -->
         <div class="overflow-x-auto rounded-lg border bg-white">
             <table class="min-w-full text-sm whitespace-nowrap">
                 <thead class="bg-gray-100">
@@ -40,7 +32,6 @@
                 <tbody>
                     @forelse($orders as $item)
                         <tr class="hover:bg-gray-50">
-                            <!-- Nomor urut otomatis lanjut untuk pagination -->
                             <td class="border px-4 py-3 text-center">{{ $orders->firstItem() + $loop->index }}</td>
                             <td class="border px-4 py-3 text-center font-semibold text-gray-700">
                                 {{ $item->antrean->nomor_antrean ?? '-' }}</td>
@@ -91,8 +82,6 @@
                     </tbody>
                 </table>
             </div>
-
-            <!-- Area Paginate (Muncul kalau data lebih dari 10) -->
             @if ($orders->hasPages())
                 <div class="mt-6">
                     {{ $orders->links() }}
@@ -100,12 +89,11 @@
             @endif
         </div>
 
-        <!-- MODAL SCANNER (Udah dibikin responsif) -->
         <div id="modalScanner"
             class="fixed inset-0 z-50 hidden items-center justify-center bg-black/60 p-4 backdrop-blur-sm transition-opacity">
             <div class="w-full max-w-xl max-h-[90vh] overflow-y-auto rounded-xl bg-white p-6 relative shadow-2xl">
                 <div class="mb-4 flex items-center justify-between">
-                    <h2 class="text-xl font-semibold text-gray-800">Scan QR Member</h2>
+                    <h2 class="text-xl font-semibold text-gray-800">Scan QR Pelanggan</h2>
                     <button id="btnCloseScanner" class="text-gray-400 hover:text-gray-700 transition">
                         <i class="fa-solid fa-xmark text-xl"></i>
                     </button>
@@ -113,7 +101,7 @@
 
                 <div id="reader" class="rounded-lg border border-gray-200 overflow-hidden bg-gray-50"></div>
 
-                <p class="mt-4 text-center text-sm text-gray-500">Arahkan kamera ke QR Code Member.</p>
+                <p class="mt-4 text-center text-sm text-gray-500">Arahkan kamera ke QR Code Pelanggan.</p>
             </div>
         </div>
 
@@ -184,7 +172,6 @@
             }
 
             function error(err) {
-                // Abaikan error saat scanning berjalan
             }
 
             function stopScanner() {
