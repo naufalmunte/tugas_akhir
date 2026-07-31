@@ -2,9 +2,8 @@
 @section('title', 'Kelola Gaji')
 
 @section('content')
-    <div class="rounded-xl bg-white p-6 shadow-sm">
-
-        <div class="mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div class="rounded-xl bg-white p-6 shadow-sm border border-gray-100">
+        <div class="mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-gray-100 pb-4">
             <div>
                 <h1 class="heading text-2xl font-semibold text-gray-800">Kelola Gaji</h1>
                 <p class="body-text text-sm text-gray-500">Kelola seluruh periode gaji karyawan.</p>
@@ -14,62 +13,62 @@
                 <div class="relative w-full sm:w-auto">
                     <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
                     <input type="text" id="searchPeriode" placeholder="Cari periode..."
-                        class="w-full sm:w-72 rounded-lg border border-gray-300 py-2 pl-10 pr-4 focus:border-[#5AA8D6] focus:outline-none">
+                        class="w-full sm:w-72 rounded-lg border border-gray-300 py-2 pl-10 pr-4 text-sm focus:border-[#5AA8D6] focus:outline-none focus:ring-1 focus:ring-[#5AA8D6]">
                 </div>
 
                 <a href="{{ route('owner.periode-gaji.create') }}"
-                    class="flex w-full sm:w-auto justify-center items-center gap-2 rounded-lg bg-[#5AA8D6] px-4 py-2 text-white transition hover:bg-[#3A4163]">
-                    <i class="fa-solid fa-plus"></i>
+                    class="flex w-full sm:w-auto justify-center items-center gap-2 rounded-lg bg-[#5AA8D6] px-4 py-2 text-sm font-medium text-white transition hover:bg-[#3A4163]">
                     <span>Tambah Periode</span>
                 </a>
             </div>
         </div>
 
         <div class="overflow-x-auto rounded-lg border bg-white">
-            <table class="min-w-full text-sm whitespace-nowrap">
+            <table class="min-w-full text-sm">
                 <thead class="bg-gray-100">
                     <tr>
-                        <th class="border px-4 py-3 text-center">No</th>
-                        <th class="border px-4 py-3 text-center">Tahun</th>
-                        <th class="border px-4 py-3 text-center">Bulan</th>
-                        <th class="border px-4 py-3 text-right">Gaji / Order</th>
-                        <th class="border px-4 py-3 text-center">Total Order</th>
-                        <th class="border px-4 py-3 text-center">Jumlah Karyawan</th>
-                        <th class="border px-4 py-3 text-right">Total Gaji</th>
-                        <th class="border px-4 py-3 text-center">Status</th>
-                        <th class="border px-4 py-3 text-center">Aksi</th>
+                        <th class="border px-2 py-2 text-center">No</th>
+                        <th class="border px-2 py-2 text-center">Tahun</th>
+                        <th class="border px-2 py-2 text-center">Bulan</th>
+                        <th class="border px-2 py-2 text-right">Gaji / Order</th>
+                        <th class="border px-2 py-2 text-center">Total Order</th>
+                        <th class="border px-2 py-2 text-center">Jml Karyawan</th>
+                        <th class="border px-2 py-2 text-right">Total Gaji</th>
+                        <th class="border px-2 py-2 text-center">Status</th>
+                        <th class="border px-2 py-2 text-center">Aksi</th>
                     </tr>
                 </thead>
 
                 <tbody id="periodeTable">
                     @forelse ($periodeGaji as $item)
                         <tr class="periode-row hover:bg-gray-50">
-                            <td class="border px-4 py-3 text-center">{{ $periodeGaji->firstItem() + $loop->index }}</td>
-                            <td class="border px-4 py-3 text-center">{{ $item->tahun }}</td>
-                            <td class="border px-4 py-3 text-center">{{ $item->bulan }}</td>
-                            <td class="border px-4 py-3 text-right">Rp
-                                {{ number_format($item->gaji_per_order, 0, ',', '.') }}
+                            <td class="border px-2 py-2 text-center whitespace-nowrap">{{ $periodeGaji->firstItem() + $loop->index }}</td>
+                            <td class="border px-2 py-2 text-center font-medium whitespace-nowrap">{{ $item->tahun }}</td>
+                            <td class="border px-2 py-2 text-center">{{ $item->bulan }}</td>
+                            <td class="border px-2 py-2 text-right whitespace-nowrap">
+                                Rp {{ number_format($item->gaji_per_order, 0, ',', '.') }}
                             </td>
-                            <td class="border px-4 py-3 text-center">{{ $item->gaji->sum('jumlah_order') }}</td>
-                            <td class="border px-4 py-3 text-center">{{ $item->gaji->count() }}</td>
-                            <td class="border px-4 py-3 text-right">Rp
-                                {{ number_format($item->gaji->sum('total_gaji'), 0, ',', '.') }}</td>
-                            <td class="border px-4 py-3 text-center">
+                            <td class="border px-2 py-2 text-center whitespace-nowrap">{{ $item->gaji->sum('jumlah_order') }}</td>
+                            <td class="border px-2 py-2 text-center whitespace-nowrap">{{ $item->gaji->count() }}</td>
+                            <td class="border px-2 py-2 text-right font-bold text-gray-900 whitespace-nowrap">
+                                Rp {{ number_format($item->gaji->sum('total_gaji'), 0, ',', '.') }}
+                            </td>
+                            <td class="border px-2 py-2 text-center whitespace-nowrap">
                                 @if ($item->status == 'Belum Diproses')
-                                    <span class="rounded-lg bg-yellow-100 px-3 py-1 text-xs font-medium text-yellow-700">
+                                    <span class="rounded-lg bg-yellow-100 px-2 py-1 text-xs font-semibold text-yellow-700">
                                         Belum Diproses
                                     </span>
                                 @else
-                                    <span class="rounded-lg bg-green-100 px-3 py-1 text-xs font-medium text-green-700">
+                                    <span class="rounded-lg bg-green-100 px-2 py-1 text-xs font-semibold text-green-700">
                                         Sudah Diproses
                                     </span>
                                 @endif
                             </td>
-                            <td class="border px-4 py-3">
-                                <div class="flex justify-center gap-2">
+                            <td class="border px-2 py-2 text-center w-1 whitespace-nowrap">
+                                <div class="flex justify-center gap-1">
                                     @if ($item->status == 'Belum Diproses')
                                         <a href="{{ route('owner.periode-gaji.edit', $item->id) }}"
-                                            class="rounded-lg bg-yellow-400 px-3 py-2 text-white transition hover:bg-yellow-500">
+                                            class="rounded-lg bg-yellow-400 px-2 py-1.5 text-white transition hover:bg-yellow-500" title="Edit">
                                             <i class="fa-solid fa-pen-to-square"></i>
                                         </a>
 
@@ -78,7 +77,7 @@
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit"
-                                                class="rounded-lg bg-red-500 px-3 py-2 text-white transition hover:bg-red-600">
+                                                class="rounded-lg bg-red-500 px-2 py-1.5 text-white transition hover:bg-red-600" title="Hapus">
                                                 <i class="fa-solid fa-trash"></i>
                                             </button>
                                         </form>
@@ -87,13 +86,13 @@
                                             class="form-proses inline-block">
                                             @csrf
                                             <button type="submit"
-                                                class="rounded-lg bg-[#5AA8D6] px-3 py-2 text-white transition hover:bg-[#3A4163]">
+                                                class="rounded-lg bg-[#5AA8D6] px-2 py-1.5 text-white transition hover:bg-[#3A4163]" title="Proses Gaji">
                                                 <i class="fa-solid fa-play"></i>
                                             </button>
                                         </form>
                                     @else
                                         <a href="{{ route('owner.periode-gaji.show', $item->id) }}"
-                                            class="rounded-lg bg-green-600 px-3 py-2 text-white transition hover:bg-green-700">
+                                            class="rounded-lg bg-green-600 px-2 py-1.5 text-white transition hover:bg-green-700" title="Lihat Detail">
                                             <i class="fa-solid fa-eye"></i>
                                         </a>
                                     @endif
@@ -116,7 +115,6 @@
                 {{ $periodeGaji->links() }}
             </div>
         @endif
-
     </div>
 
     <script>

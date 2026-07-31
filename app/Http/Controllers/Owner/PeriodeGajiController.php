@@ -14,7 +14,7 @@ class PeriodeGajiController extends Controller
     public function index()
     {
         $periodeGaji = PeriodeGaji::with('gaji')
-            ->latest()
+            ->oldest()
             ->paginate(10);
 
         return view('owner.periode_gaji.index', compact('periodeGaji'));
@@ -28,7 +28,11 @@ class PeriodeGajiController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'tahun' => 'required|digits:4',
+            'tahun' => [
+        'integer',
+        'min:' . date('Y'),
+        'max:' . (date('Y') + 10),
+    ],
             'bulan' => 'required',
             'gaji_per_order' => 'required|numeric|min:1',
         ]);
