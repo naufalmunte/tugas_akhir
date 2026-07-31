@@ -61,7 +61,6 @@
                 <th>Pelanggan</th>
                 <th>Layanan</th>
                 <th>Karyawan</th>
-                <th>Harga</th>
                 <th>Status</th>
             </tr>
         </thead>
@@ -73,7 +72,6 @@
                     <td>{{ $item->pelanggan->nama }}</td>
                     <td>{{ $item->layanan->nama_layanan }}</td>
                     <td>{{ $item->karyawan->nama ?? '-' }}</td>
-                    <td align="right">Rp {{ number_format($item->harga, 0, ',', '.') }}</td>
                     <td align="center">{{ $item->antrean->status }}</td>
                 </tr>
             @empty
@@ -82,13 +80,6 @@
                 </tr>
             @endforelse
         </tbody>
-        <tfoot>
-            <tr>
-                <th colspan="5" align="right">Total Pendapatan</th>
-                <th align="right">Rp {{ number_format($totalPendapatan, 0, ',', '.') }}</th>
-                <th></th>
-            </tr>
-        </tfoot>
     </table>
     <div class="footer">
         <div class="ttd">

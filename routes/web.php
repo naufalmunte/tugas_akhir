@@ -140,11 +140,14 @@ Route::middleware(['auth','role:owner'])->prefix('owner')->name('owner.')->group
         Route::get('/gaji', [LaporanController::class, 'gaji'])
             ->name('gaji');
 
+        Route::get('/pendapatan', [LaporanController::class, 'pendapatan'])
+            ->name('pendapatan');
     });
 
     Route::get('/laporan/order/cetak',[LaporanController::class,'cetakOrder'])->name('laporan.order.cetak');
     Route::get('/laporan/stok/cetak',[LaporanController::class,'cetakStok']) ->name('laporan.stok.cetak');
     Route::get('/laporan/gaji/cetak', [LaporanController::class, 'cetakGaji'])->name('laporan.gaji.cetak');
+    Route::get('/laporan/pendapatan/cetak', [LaporanController::class, 'cetakPendapatan'])->name('laporan.pendapatan.cetak');
 
     Route::get('/profil-bisnis', [ProfilBisnisController::class, 'index'])->name('profil-bisnis.index');
     Route::put('/profil-bisnis', [ProfilBisnisController::class, 'update'])->name('profil-bisnis.update');

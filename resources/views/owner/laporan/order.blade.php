@@ -3,23 +3,17 @@
 
 @section('content')
     <div class="rounded-xl bg-white p-6 shadow-sm">
-        <!-- Header & Filter: Diperbaiki biar tidak keluar layar di HP -->
         <div class="mb-6 flex flex-col md:flex-row md:items-start md:justify-between gap-4">
             <div>
                 <h1 class="text-2xl font-semibold text-gray-800">Laporan Order</h1>
                 <p class="mt-1 text-sm text-gray-500">Data laporan seluruh order.</p>
             </div>
 
-            <!-- Pembungkus Form & Cetak -->
             <div class="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
-
                 <form action="{{ route('owner.laporan.order') }}" method="GET"
                     class="flex flex-col sm:flex-row w-full sm:w-auto gap-2">
-                    <!-- Input Tanggal: Penuh di HP, menyesuaikan di Desktop -->
                     <input type="date" name="tanggal" value="{{ request('tanggal') }}"
                         class="w-full sm:w-auto rounded-lg border border-gray-300 px-3 py-2 focus:border-[#5AA8D6] focus:outline-none">
-
-                    <!-- Grup Tombol Filter & Reset: Dibagi dua sama rata di HP (flex-1) -->
                     <div class="flex gap-2 w-full sm:w-auto">
                         <button type="submit"
                             class="flex-1 sm:flex-none flex justify-center items-center rounded-lg bg-[#5AA8D6] px-4 py-2 text-white hover:bg-[#3A4163] transition">
@@ -39,20 +33,13 @@
             </div>
         </div>
 
-        <!-- Summary Cards -->
         <div class="mb-6 grid grid-cols-1 gap-5 md:grid-cols-2">
             <div class="rounded-xl bg-blue-50 border border-blue-100 p-5 hover:shadow-md transition-shadow">
                 <p class="text-sm font-medium text-blue-800">Total Order</p>
                 <h2 class="mt-2 text-3xl font-bold text-[#3A4163]">{{ $totalOrder }}</h2>
             </div>
-            <div class="rounded-xl bg-green-50 border border-green-100 p-5 hover:shadow-md transition-shadow">
-                <p class="text-sm font-medium text-green-800">Total Pendapatan</p>
-                <h2 class="mt-2 text-3xl font-bold text-green-600">Rp {{ number_format($totalPendapatan, 0, ',', '.') }}
-                </h2>
-            </div>
         </div>
 
-        <!-- Tabel Laporan -->
         <div class="overflow-x-auto rounded-lg border bg-white">
             <table class="min-w-full text-sm whitespace-nowrap">
                 <thead class="bg-gray-100">
@@ -62,7 +49,6 @@
                         <th class="border px-4 py-3 text-left">Pelanggan</th>
                         <th class="border px-4 py-3 text-left">Layanan</th>
                         <th class="border px-4 py-3 text-left">Karyawan</th>
-                        <th class="border px-4 py-3 text-end">Harga</th>
                         <th class="border px-4 py-3 text-center">Status</th>
                     </tr>
                 </thead>
@@ -75,8 +61,6 @@
                             <td class="border px-4 py-3 font-medium text-gray-800">{{ $item->pelanggan->nama }}</td>
                             <td class="border px-4 py-3 text-gray-600">{{ $item->layanan->nama_layanan }}</td>
                             <td class="border px-4 py-3 text-gray-600">{{ $item->karyawan->nama ?? '-' }}</td>
-                            <td class="border px-4 py-3 text-end font-semibold text-gray-800">Rp
-                                {{ number_format($item->harga, 0, ',', '.') }}</td>
                             <td class="border px-4 py-3 text-center">
                                 @if ($item->antrean)
                                     @switch($item->antrean->status)
@@ -122,7 +106,6 @@
                 </table>
             </div>
 
-            <!-- Paginasi -->
             @if ($order->hasPages())
                 <div class="mt-6">
                     {{ $order->links() }}
