@@ -12,26 +12,32 @@ class StokController extends Controller
 {
     public function index()
     {
-        $stok=Stok::orderBy('nama_barang')->get();
+        $stok = Stok::orderBy('nama_barang')
+            ->paginate(10, ['*'], 'stok_page');
 
-        $transaksi=StokTransaksi::with('stok')
+        $stokDropdown = Stok::orderBy('nama_barang')->get();
+
+        $transaksi = StokTransaksi::with('stok')
             ->latest()
-            ->get();
+            ->paginate(5, ['*'], 'transaksi_page');
 
-        return view('admin.stok.index',compact(
+        return view('admin.stok.index', compact(
             'stok',
+            'stokDropdown',
             'transaksi'
         ));
     }
-
     public function store(Request $request)
     {
         $request->validate([
-            'nama_barang'=>'required|max:100',
+            'nama_barang'=>'required|max:100|unique:stok,nama_barang',
             'satuan'=>'required|in:Botol,Liter,Pcs',
             'stok'=>'required|integer|min:0',
             'stok_minimum'=>'required|integer|min:0'
-        ]);
+        ],
+        [
+            'nama_barang.unique' => 'Nama barang sudah terdaftar.',]
+        );
 
         Stok::create([
             'nama_barang'=>$request->nama_barang,
@@ -49,48 +55,41 @@ class StokController extends Controller
     public function transaksi(Request $request)
     {
         $request->validate([
-            'stok_id'=>'required|exists:stok,id',
-            'jenis'=>'required|in:Masuk,Keluar',
-            'jumlah'=>'required|integer|min:1',
-            'keterangan'=>'nullable|max:255'
+            'stok_id' => 'required|exists:stok,id',
+            'jenis' => 'required|in:Masuk,Keluar',
+            'jumlah' => 'required|integer|min:1',
+            'keterangan' => 'nullable|max:255'
         ]);
+
+        $stok = Stok::findOrFail($request->stok_id);
+
+        if ($request->jenis == 'Keluar' && $request->jumlah > $stok->stok) {
+            return back()->with(
+                'error',
+                'Stok tidak mencukupi.'
+            );
+        }
 
         DB::beginTransaction();
 
-        try{
-
-            $stok=Stok::findOrFail($request->stok_id);
-
-            if($request->jenis=='Keluar'){
-
-                if($request->jumlah>$stok->stok){
-
-                    return back()->with(
-                        'error',
-                        'Stok tidak mencukupi.'
-                    );
-
-                }
-
+        try {
+            if ($request->jenis == 'Keluar') {
                 $stok->decrement(
                     'stok',
                     $request->jumlah
                 );
-
-            }else{
-
+            } else {
                 $stok->increment(
                     'stok',
                     $request->jumlah
                 );
-
             }
 
             StokTransaksi::create([
-                'stok_id'=>$stok->id,
-                'jenis'=>$request->jenis,
-                'jumlah'=>$request->jumlah,
-                'keterangan'=>$request->keterangan
+                'stok_id' => $stok->id,
+                'jenis' => $request->jenis,
+                'jumlah' => $request->jumlah,
+                'keterangan' => $request->keterangan
             ]);
 
             DB::commit();
@@ -100,15 +99,12 @@ class StokController extends Controller
                 'Transaksi stok berhasil.'
             );
 
-        }catch(\Exception $e){
-
+        } catch (\Exception $e) {
             DB::rollBack();
-
             return back()->with(
                 'error',
                 $e->getMessage()
             );
-
         }
     }
 }

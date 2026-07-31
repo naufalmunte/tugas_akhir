@@ -101,6 +101,7 @@ Route::middleware(['auth','role:admin'])->prefix('admin')->name('admin.')->group
     Route::get('/stok',[StokController::class,'index'])->name('stok.index');
     Route::post('/stok/store',[StokController::class,'store'])->name('stok.store');
     Route::post('/stok/transaksi',[StokController::class,'transaksi'])->name('stok.transaksi');
+    Route::delete('/stok/{stok}', [StokController::class, 'destroy'])->name('stok.destroy');
 
     
 });
