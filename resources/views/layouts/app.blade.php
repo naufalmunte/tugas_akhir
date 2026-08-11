@@ -4,9 +4,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>@yield('title') | Sistem Informasi Door Smeer</title>
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    <script type="text/javascript" src="https://app.sandbox.midtrans.com/snap/snap.js"
+        data-client-key="{{ config('services.midtrans.client_key') }}"></script>
 </head>
 
 <body class="bg-[#EDF3FB] font-sans">

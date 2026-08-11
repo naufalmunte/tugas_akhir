@@ -17,7 +17,7 @@ class KaryawanController extends Controller
                     ->orWhere('no_hp', 'like', "%{$search}%");
             })
             ->latest()
-            ->paginate(1)
+            ->paginate(10)
             ->withQueryString();
 
         return view('admin.karyawan.index', compact('karyawan'));

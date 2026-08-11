@@ -12,6 +12,7 @@ use Endroid\QrCode\Encoding\Encoding;
 use Endroid\QrCode\ErrorCorrectionLevel;
 use Endroid\QrCode\Writer\PngWriter;
 use App\Models\Order;
+use App\Services\MidtransService;
 
 class AntreanController extends Controller
 {
@@ -90,23 +91,93 @@ class AntreanController extends Controller
         return back()->with('success','Menunggu pembayaran.');
     }
 
-    public function bayar(Request $request,Antrean $antrean)
+    public function bayar(Request $request, Antrean $antrean)
     {
         $request->validate([
-            'metode_pembayaran'=>'required|in:Cash,QRIS'
+            'metode_pembayaran' => 'required|in:Cash,QRIS,Transfer'
         ]);
 
         $antrean->order->update([
-            'metode_pembayaran'=>$request->metode_pembayaran
+            'metode_pembayaran' => $request->metode_pembayaran,
+        ]);
+
+        if ($request->metode_pembayaran === 'Cash') {
+            $antrean->order->update([
+                'status_pembayaran' => 'paid',
+            ]);
+
+            $antrean->update([
+                'status' => 'Selesai',
+            ]);
+
+            return redirect()
+                ->route('admin.antrean.index')
+                ->with('success', 'Pembayaran berhasil.');
+        }
+        return redirect()
+            ->route('admin.antrean.index')
+            ->with('success', 'Silakan lanjutkan pembayaran melalui Midtrans.');
+    }
+
+    public function createPayment(
+        Request $request,
+        Antrean $antrean,
+        MidtransService $midtransService
+    ) {
+        $request->validate([
+            'metode_pembayaran' => 'required|in:QRIS,Transfer',
+        ]);
+
+        if ($antrean->status !== 'Menunggu Pembayaran') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Order belum dapat melakukan pembayaran.'
+            ], 422);
+        }
+
+        $antrean->load('order.pelanggan', 'order.layanan');
+
+        $order = $antrean->order;
+
+        $order->update([
+            'metode_pembayaran' => $request->metode_pembayaran,
+            'status_pembayaran' => 'pending',
+        ]);
+
+        $payment = $midtransService->createTransaction($order);
+
+        return response()->json([
+            'success' => true,
+            'snap_token' => $payment['snap_token'],
+            'order_id' => $payment['order_id'],
+        ]);
+    }
+
+    public function pembayaranBerhasil(Antrean $antrean)
+    {
+        $antrean->load('order');
+
+        if (!$antrean->order) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Order tidak ditemukan.'
+            ], 404);
+        }
+
+        $antrean->order->update([
+            'status_pembayaran' => 'paid',
         ]);
 
         $antrean->update([
-            'status'=>'Selesai'
+            'status' => 'Selesai',
         ]);
 
-        return redirect()->route('admin.antrean.index')
-            ->with('success','Pembayaran berhasil.');
+        return response()->json([
+            'success' => true,
+            'message' => 'Pembayaran berhasil diperbarui.'
+        ]);
     }
+
 
     public function batalkan(Antrean $antrean)
     {

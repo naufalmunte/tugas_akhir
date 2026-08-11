@@ -87,8 +87,7 @@
                                         </div>
                                     @elseif($item->status == 'Diproses')
                                         <form action="{{ route('admin.antrean.selesaiCuci', $item->id) }}" method="POST"
-                                            class="formSelesai inline-block" 
-                                            data-kendaraan="1">
+                                            class="formSelesai inline-block" data-kendaraan="1">
                                             @csrf
                                             @method('PUT')
                                             <button
@@ -186,8 +185,7 @@
                                         </div>
                                     @elseif($item->status == 'Diproses')
                                         <form action="{{ route('admin.antrean.selesaiCuci', $item->id) }}" method="POST"
-                                            class="formSelesai inline-block"
-                                            data-kendaraan="0">
+                                            class="formSelesai inline-block" data-kendaraan="0">
                                             @csrf
                                             @method('PUT')
                                             <button
@@ -268,28 +266,32 @@
             class="fixed inset-0 z-50 hidden items-center justify-center bg-black/60 p-4 backdrop-blur-sm transition-opacity">
             <div class="w-full max-w-3xl rounded-xl bg-white shadow-2xl relative overflow-hidden">
                 <div class="flex items-center justify-between border-b px-6 py-4">
-                    <h3 class="text-lg font-bold text-gray-900">Konfirmasi Pembayaran</h3>
+                    <h3 class="text-lg font-bold text-gray-900">
+                        Konfirmasi Pembayaran
+                    </h3>
                     <button type="button" data-modal-hide="modalBayar"
                         class="text-gray-400 hover:text-red-500 hover:bg-gray-100 rounded-lg w-8 h-8 flex items-center justify-center transition">
                         <i class="fa-solid fa-xmark text-xl"></i>
                     </button>
                 </div>
+
                 <form id="formBayar" method="POST">
                     @csrf
                     @method('PUT')
-
                     <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
                         <div class="space-y-4">
                             <div class="bg-gray-50 rounded-xl p-4 border border-gray-200">
-                                <label
-                                    class="block mb-1 text-xs font-semibold text-gray-500 uppercase tracking-wider">Pelanggan</label>
+                                <label class="block mb-1 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                                    Pelanggan
+                                </label>
                                 <input type="text" id="namaPelanggan"
                                     class="w-full bg-transparent border-none p-0 text-gray-900 font-bold focus:ring-0 cursor-not-allowed"
                                     readonly>
                             </div>
-
                             <div>
-                                <label class="block mb-2 text-sm font-medium text-gray-900">Total Pembayaran</label>
+                                <label class="block mb-2 text-sm font-medium text-gray-900">
+                                    Total Pembayaran
+                                </label>
                                 <input type="text" id="totalBayar"
                                     class="bg-gray-100 border border-gray-300 text-gray-900 text-xl font-bold rounded-lg block w-full p-2.5 cursor-not-allowed"
                                     readonly>
@@ -298,38 +300,63 @@
 
                         <div class="space-y-5 md:border-l md:border-gray-100 md:pl-8">
                             <div>
-                                <label class="block mb-2 text-sm font-medium text-gray-900">Metode Pembayaran</label>
+                                <label class="block mb-2 text-sm font-medium text-gray-900">
+                                    Metode Pembayaran
+                                </label>
                                 <select name="metode_pembayaran" id="metodePembayaran"
                                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-orange-500 focus:border-orange-500 block w-full p-3"
                                     required>
-                                    <option value="">Pilih Metode</option>
-                                    <option value="Cash">Cash</option>
-                                    <option value="QRIS">QRIS</option>
+                                    <option value="">
+                                        Pilih Metode
+                                    </option>
+                                    <option value="Cash">
+                                        Cash
+                                    </option>
+                                    <option value="QRIS">
+                                        QRIS
+                                    </option>
+                                    <option value="Transfer">
+                                        Transfer
+                                    </option>
                                 </select>
                             </div>
 
-                            <div id="qrisSection" class="hidden flex-col items-center justify-center pt-2">
-                                <div class="bg-white p-3 rounded-xl border border-gray-200 shadow-sm inline-block">
-                                    <img id="qrisImage" class="h-50 w-50 object-contain rounded-lg">
+                            <div id="onlinePaymentInfo" class="hidden rounded-xl border border-blue-100 bg-blue-50 p-4">
+                                <div class="flex items-start gap-3">
+                                    <div class="text-blue-600 pt-0.5">
+                                        <i class="fa-solid fa-credit-card"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm font-semibold text-blue-800">
+                                            Pembayaran Online
+                                        </p>
+                                        <p class="mt-1 text-xs text-blue-700">
+                                            Setelah menekan tombol pembayaran,
+                                            pelanggan akan diarahkan ke halaman pembayaran Midtrans.
+                                        </p>
+                                    </div>
                                 </div>
-                                <p class="mt-3 text-xs font-medium text-gray-500 text-center"><i
-                                        class="fa-solid fa-qrcode mr-1"></i> Scan QRIS untuk membayar.</p>
                             </div>
                         </div>
                     </div>
 
                     <div class="flex justify-end gap-3 border-t bg-gray-50 px-6 py-4">
                         <button type="button" data-modal-hide="modalBayar"
-                            class="rounded-lg bg-white border border-gray-200 px-5 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-100 transition">Batal</button>
-                        <button type="submit"
-                            class="btn-konfirmasi rounded-lg bg-green-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-green-700 transition flex items-center shadow-sm">
-                            </i> Konfirmasi Pembayaran
+                            class="rounded-lg bg-white border border-gray-200 px-5 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-100 transition">
+                            Batal
+                        </button>
+                        <button type="submit" id="btnKonfirmasiPembayaran"
+                            class="rounded-lg bg-green-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-green-700 transition flex items-center shadow-sm">
+                            <i class="fa-solid fa-check mr-2"></i>
+                            Konfirmasi Pembayaran
                         </button>
                     </div>
                 </form>
             </div>
         </div>
 
+        <script src="https://app.sandbox.midtrans.com/snap/snap.js"
+            data-client-key="{{ config('services.midtrans.client_key') }}"></script>
         <script>
             document.querySelectorAll('.btnMulai').forEach(function(btn) {
                 btn.addEventListener('click', function() {
@@ -386,50 +413,202 @@
             document.querySelectorAll('.btnBayar').forEach(function(btn) {
                 btn.addEventListener('click', function() {
                     window.antreanId = this.dataset.antrean;
-                    document.getElementById('formBayar').action = "{{ url('admin/antrean') }}/" + window
-                        .antreanId + "/bayar";
-                    document.getElementById('namaPelanggan').value = this.dataset.pelanggan;
-                    document.getElementById('totalBayar').value = "Rp " + Number(this.dataset.harga)
-                        .toLocaleString('id-ID');
+                    document.getElementById('formBayar').action =
+                        "{{ url('admin/antrean') }}/" + window.antreanId + "/bayar";
+                    document.getElementById('namaPelanggan').value =
+                        this.dataset.pelanggan;
+                    document.getElementById('totalBayar').value =
+                        "Rp " + Number(this.dataset.harga).toLocaleString('id-ID');
                     document.getElementById('metodePembayaran').value = "";
-                    document.getElementById('qrisSection').classList.add('hidden');
-                    document.getElementById('qrisSection').classList.remove('flex');
+                    document.getElementById('onlinePaymentInfo').classList.add('hidden');
                 });
             });
 
             document.getElementById('metodePembayaran').addEventListener('change', function() {
-                if (this.value == "QRIS") {
-                    fetch("{{ url('admin/antrean') }}/" + window.antreanId + "/qris")
-                        .then(res => res.json())
-                        .then(data => {
-                            document.getElementById('qrisImage').src = data.image;
-                            document.getElementById('qrisSection').classList.remove('hidden');
-                            document.getElementById('qrisSection').classList.add('flex');
-                        });
+                const metode = this.value;
+                const onlineInfo = document.getElementById('onlinePaymentInfo');
+
+                if (metode === 'QRIS' || metode === 'Transfer') {
+                    onlineInfo.classList.remove('hidden');
                 } else {
-                    document.getElementById('qrisSection').classList.add('hidden');
-                    document.getElementById('qrisSection').classList.remove('flex');
+                    onlineInfo.classList.add('hidden');
                 }
             });
 
-            document.querySelectorAll('.btn-konfirmasi').forEach(button => {
-                button.closest('form').addEventListener('submit', function(e) {
-                    e.preventDefault();
+            document.getElementById('formBayar').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const form = this;
+                const metode = document.getElementById('metodePembayaran').value;
+                if (!metode) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Pilih Metode Pembayaran',
+                        text: 'Silakan pilih metode pembayaran terlebih dahulu.'
+                    });
+
+                    return;
+                }
+                if (metode === 'Cash') {
                     Swal.fire({
                         title: 'Konfirmasi Pembayaran',
-                        text: 'Apakah Anda yakin pembayaran sudah diterima?',
+                        text: 'Apakah pembayaran Cash sudah diterima?',
                         icon: 'question',
                         showCancelButton: true,
-                        confirmButtonText: 'Ya',
+                        confirmButtonText: 'Ya, Pembayaran Diterima',
                         cancelButtonText: 'Batal',
                         confirmButtonColor: '#16a34a',
                         cancelButtonColor: '#6b7280'
                     }).then((result) => {
                         if (result.isConfirmed) {
-                            this.submit();
+                            form.submit();
                         }
                     });
+                    return;
+                }
+
+                Swal.fire({
+                    title: 'Membuat Pembayaran...',
+                    text: 'Mohon tunggu sebentar.',
+                    allowOutsideClick: false,
+                    allowEscapeKey: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
                 });
+
+                fetch("{{ url('admin/antrean') }}/" + window.antreanId + "/payment", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "X-CSRF-TOKEN": "{{ csrf_token() }}",
+                            "Accept": "application/json"
+                        },
+                        body: JSON.stringify({
+                            metode_pembayaran: metode
+                        })
+                    })
+                    .then(async response => {
+                        const text = await response.text();
+
+                        console.log('HTTP STATUS:', response.status);
+                        console.log('RESPONSE:', text);
+
+                        if (!response.ok) {
+                            throw new Error(
+                                'HTTP ' + response.status + ': ' + text.substring(0, 500)
+                            );
+                        }
+                        try {
+                            return JSON.parse(text);
+                        } catch (error) {
+                            throw new Error(
+                                'Server tidak mengembalikan JSON. Response: ' +
+                                text.substring(0, 500)
+                            );
+                        }
+                    })
+                    .then(data => {
+                        Swal.close();
+                        if (!data.success) {
+                            throw new Error(data.message || 'Gagal membuat pembayaran.');
+                        }
+                        window.snap.pay(data.snap_token, {
+                            onSuccess: function(result) {
+                                fetch("{{ url('admin/antrean') }}/" + window.antreanId +
+                                        "/pembayaran-berhasil", {
+                                            method: "POST",
+                                            headers: {
+                                                "X-CSRF-TOKEN": "{{ csrf_token() }}",
+                                                "Accept": "application/json"
+                                            }
+                                        })
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        if (data.success) {
+                                            Swal.fire({
+                                                icon: 'success',
+                                                title: 'Pembayaran Berhasil',
+                                                text: 'Pembayaran telah berhasil dilakukan.',
+                                                confirmButtonText: 'OK'
+                                            }).then(() => {
+                                                window.location.reload();
+                                            });
+                                        } else {
+                                            Swal.fire({
+                                                icon: 'error',
+                                                title: 'Gagal',
+                                                text: data.message ||
+                                                    'Gagal memperbarui status pembayaran.'
+                                            });
+
+                                        }
+
+                                    })
+                                    .catch(error => {
+                                        console.error(error);
+                                        Swal.fire({
+                                            icon: 'error',
+                                            title: 'Gagal',
+                                            text: 'Pembayaran berhasil, tetapi status sistem gagal diperbarui.'
+                                        });
+                                    });
+                            },
+
+                            onPending: function(result) {
+                                Swal.fire({
+                                    icon: 'info',
+                                    title: 'Menunggu Pembayaran',
+                                    text: 'Pembayaran belum dikonfirmasi.',
+                                    confirmButtonText: 'OK'
+                                });
+                            },
+
+                            onError: function(result) {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Pembayaran Gagal',
+                                    text: 'Terjadi kesalahan pada proses pembayaran.'
+                                });
+                            },
+
+                            onClose: function() {
+                                console.log('Popup Midtrans ditutup.');
+                            }
+                        });
+                    })
+                    .catch(error => {
+                        Swal.close();
+
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Gagal Membuat Pembayaran',
+                            text: error.message
+                        });
+                    });
+                return false;
+            });
+
+            document.addEventListener('DOMContentLoaded', function() {
+                const urlParams = new URLSearchParams(window.location.search);
+                const transactionStatus = urlParams.get('transaction_status');
+
+                if (transactionStatus === 'settlement') {
+                    sessionStorage.setItem('payment_success', '1');
+                    window.history.replaceState({},
+                        document.title,
+                        window.location.pathname
+                    );
+                    window.location.reload();
+                }
+                if (sessionStorage.getItem('payment_success') === '1') {
+                    sessionStorage.removeItem('payment_success');
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Pembayaran Berhasil',
+                        text: 'Pembayaran berhasil dan antrean telah selesai.',
+                        confirmButtonText: 'OK'
+                    });
+                }
             });
 
             const tabKendaraan = document.getElementById('tab-kendaraan');

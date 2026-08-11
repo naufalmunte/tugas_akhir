@@ -134,7 +134,7 @@
                 </li>
                  <li>
                     <a href="{{ route('owner.laporan.pendapatan') }}"
-                        class="flex items-center gap-3 px-4 py-2 pl-12 rounded-lg text-sm font-medium hover:bg-[#5AA8D6] transition-colors {{ request()->routeIs('owner.laporan.order') ? 'bg-[#5AA8D6]' : '' }}">
+                        class="flex items-center gap-3 px-4 py-2 pl-12 rounded-lg text-sm font-medium hover:bg-[#5AA8D6] transition-colors {{ request()->routeIs('owner.laporan.pendapatan') ? 'bg-[#5AA8D6]' : '' }}">
                         <i class="fa-solid fa-money-bill w-4 text-center"></i> Pendapatan
                     </a>
                 </li>

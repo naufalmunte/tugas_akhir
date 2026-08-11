@@ -19,9 +19,10 @@ class LoginController extends Controller
             'username' => ['required'],
             'password' => ['required'],
         ]);
-
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
+
+            $request->session()->put('login_date', now()->toDateString());
             if (Auth::user()->role === 'admin') {
                 return redirect()->route('admin.dashboard');
             }
@@ -29,11 +30,9 @@ class LoginController extends Controller
                 return redirect()->route('owner.dashboard');
             }
         }
-        // Login gagal
         return back()
             ->withInput()
-            ->with('error', 'Username atau Password salah.'
-        );
+            ->with('error', 'Username atau Password salah.');
     }
 
     public function logout(Request $request)
@@ -41,6 +40,7 @@ class LoginController extends Controller
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
+
         return redirect()->route('login');
     }
 }

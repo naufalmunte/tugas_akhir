@@ -17,6 +17,7 @@ use App\Http\Controllers\Owner\ProfilBisnisController;
 use App\Http\Controllers\LandingPageController;
 use App\Http\Controllers\Owner\UserController;
 use App\Http\Controllers\Owner\PeriodeGajiController;
+use App\Http\Controllers\MidtransController;
 
 Route::get('/', [LandingPageController::class, 'index'])->name('landing');
 
@@ -25,8 +26,13 @@ Route::get('/login', [LoginController::class, 'index'])->name('login');
 Route::post('/login', [LoginController::class, 'authenticate'])->name('login.authenticate');
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
+Route::post('/midtrans/notification', [
+    MidtransController::class,
+    'notification'
+])->name('midtrans.notification');
 
-Route::middleware(['auth','role:admin'])->prefix('admin')->name('admin.')->group(function () {
+
+Route::middleware(['auth','daily.session','role:admin'])->prefix('admin')->name('admin.')->group(function () {
 
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])
     ->name('dashboard');
@@ -90,6 +96,14 @@ Route::middleware(['auth','role:admin'])->prefix('admin')->name('admin.')->group
     
     Route::get('/order/pelanggan/{id}',[OrderController::class,'getPelanggan'])->name('order.pelanggan');
 
+    Route::post('/antrean/{antrean}/payment', [AntreanController::class, 'createPayment'])
+            ->name('antrean.payment');
+
+    Route::post('/antrean/{antrean}/pembayaran-berhasil', [
+        AntreanController::class,
+        'pembayaranBerhasil'
+    ])->name('antrean.pembayaran.berhasil');
+
     Route::get('/antrean',[AntreanController::class,'index'])->name('antrean.index');
     Route::put('/antrean/{antrean}/mulai',[AntreanController::class,'mulai'])->name('antrean.mulai');
     Route::put('/antrean/{antrean}/selesai-cuci',[AntreanController::class,'selesaiCuci'])->name('antrean.selesaiCuci');
@@ -106,7 +120,7 @@ Route::middleware(['auth','role:admin'])->prefix('admin')->name('admin.')->group
     
 });
 
-Route::middleware(['auth','role:owner'])->prefix('owner')->name('owner.')->group(function(){
+Route::middleware(['auth','daily.session','role:owner'])->prefix('owner')->name('owner.')->group(function(){
 
    Route::get('/dashboard', [OwnerDashboardController::class, 'index'])
     ->name('dashboard');

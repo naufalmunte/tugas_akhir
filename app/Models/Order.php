@@ -21,7 +21,9 @@ class Order extends Model
         'karyawan_id',
         'harga',
         'metode_pembayaran',
-        'qris_payload'
+        'qris_payload',
+        'midtrans_order_id',
+        'status_pembayaran',     
     ];
 
     public function pelanggan()
