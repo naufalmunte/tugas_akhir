@@ -87,7 +87,7 @@
                     <th>Nama Karyawan</th>
                     <th width="18%">Periode</th>
                     <th width="15%">Jumlah Order</th>
-                    <th width="18%">Gaji / Order</th>
+                    <th width="18%">Persentase Gaji</th>
                     <th width="20%">Total Gaji</th>
                 </tr>
             </thead>
@@ -98,7 +98,7 @@
                             {{ $loop->iteration }}
                         </td>
                         <td>
-                            {{ $item->karyawan->nama }}
+                            {{ $item->karyawan->nama ?? '-' }}
                         </td>
                         <td align="center">
                             {{ $item->periodeGaji->bulan }}
@@ -107,8 +107,8 @@
                         <td align="center">
                             {{ $item->jumlah_order }}
                         </td>
-                        <td align="right">
-                            Rp {{ number_format($item->periodeGaji->gaji_per_order, 0, ',', '.') }}
+                        <td align="center">
+                            {{ number_format($item->periodeGaji->persentase_gaji, 2, ',', '.') }}%
                         </td>
                         <td align="right">
                             Rp {{ number_format($item->total_gaji, 0, ',', '.') }}

@@ -68,7 +68,7 @@
                         <th class="border px-4 py-3 text-left">Karyawan</th>
                         <th class="border px-4 py-3 text-center">Periode</th>
                         <th class="border px-4 py-3 text-center">Jumlah Order</th>
-                        <th class="border px-4 py-3 text-end">Gaji / Order</th>
+                        <th class="border px-4 py-3 text-end">Persentase Gaji</th>
                         <th class="border px-4 py-3 text-end">Total Gaji</th>
                     </tr>
                 </thead>
@@ -80,8 +80,7 @@
                                 {{ $laporan->firstItem() + $loop->index }}
                             </td>
                             <td class="border px-4 py-3 font-medium">
-                                {{ $item->karyawan->nama }}
-                            </td>
+                                {{ $item->karyawan->nama ?? '-' }} </td>
                             <td class="border px-4 py-3 text-center">
                                 {{ $item->periodeGaji->bulan }}
                                 {{ $item->periodeGaji->tahun }}
@@ -90,7 +89,7 @@
                                 {{ $item->jumlah_order }}
                             </td>
                             <td class="border px-4 py-3 text-end">
-                                Rp {{ number_format($item->periodeGaji->gaji_per_order, 0, ',', '.') }}
+                                {{ number_format($item->periodeGaji->persentase_gaji, 2, ',', '.') }}%
                             </td>
                             <td class="border px-4 py-3 text-end font-semibold">
                                 Rp {{ number_format($item->total_gaji, 0, ',', '.') }}

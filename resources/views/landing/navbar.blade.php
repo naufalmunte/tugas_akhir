@@ -24,9 +24,17 @@
                 class="px-5 py-1.5 text-sm font-medium text-slate-600 rounded-full hover:bg-white hover:text-blue-600 hover:shadow-sm transition-all duration-300">Kontak</a>
         </div>
         <div class="flex items-center gap-2 shrink-0">
-            <a href="{{ route('login') }}"
-                class="hidden lg:inline-flex px-6 py-2 text-sm font-semibold text-white bg-slate-900 rounded-full hover:bg-blue-600 hover:shadow-lg hover:shadow-blue-500/30 transition-all duration-300">Login
-                Admin</a>
+            @auth
+                <a href="{{ auth()->user()->role === 'owner' ? route('owner.dashboard') : route('admin.dashboard') }}"
+                    class="hidden lg:inline-flex px-6 py-2 text-sm font-semibold text-white bg-slate-900 rounded-full hover:bg-blue-600 hover:shadow-lg hover:shadow-blue-500/30 transition-all duration-300">
+                    Dashboard
+                </a>
+            @else
+                <a href="{{ route('login') }}"
+                    class="hidden lg:inline-flex px-6 py-2 text-sm font-semibold text-white bg-slate-900 rounded-full hover:bg-blue-600 hover:shadow-lg hover:shadow-blue-500/30 transition-all duration-300">
+                    Login Admin
+                </a>
+            @endauth
             <button data-collapse-toggle="navbar-menu" type="button"
                 class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-slate-600 rounded-full lg:hidden hover:bg-white hover:shadow-sm focus:outline-none transition-all"
                 aria-controls="navbar-menu" aria-expanded="false">
@@ -54,9 +62,21 @@
             <li><a href="#kontak"
                     class="block py-2.5 px-4 text-slate-900 rounded-xl hover:bg-blue-50 hover:text-blue-600 transition-colors">Kontak</a>
             </li>
-            <li><a href="{{ route('login') }}"
-                    class="block py-3 px-4 text-white bg-slate-900 rounded-xl text-center mt-4 font-semibold hover:bg-blue-600 transition-colors">Login
-                    Admin</a></li>
+            <li>
+                @auth
+                    <a href="{{ auth()->user()->role === 'owner' ? route('owner.dashboard') : route('admin.dashboard') }}"
+                        class="block py-3 px-4 text-white bg-slate-900 rounded-xl text-center mt-4 font-semibold hover:bg-blue-600 transition-colors">
+
+                        Dashboard
+                    </a>
+                @else
+                    <a href="{{ route('login') }}"
+                        class="block py-3 px-4 text-white bg-slate-900 rounded-xl text-center mt-4 font-semibold hover:bg-blue-600 transition-colors">
+
+                        Login Admin
+                    </a>
+                @endauth
+            </li>
         </ul>
     </div>
 </nav>

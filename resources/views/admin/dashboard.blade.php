@@ -6,11 +6,11 @@
     <div class="mt-2 rounded-xl bg-white p-6 shadow-sm">
 
         <h2 class="mb-3 text-lg font-semibold text-[#3A4163]">
-            Selamat Datang
+            Selamat Datang, Admin
         </h2>
 
         <p class="leading-7 text-gray-600">
-            Selamat datang admin
+            Kelola data pelanggan, order, antrean, pembayaran, stok, dan aktivitas layanan melalui dashboard ini.
         </p>
 
     </div>
@@ -60,14 +60,27 @@
         <div class="rounded-xl bg-white p-6 shadow-sm">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-sm text-gray-500">Total Karyawan</p>
-                    <h2 class="mt-2 text-3xl font-bold text-[#3A4163]">
-                        {{ $totalKaryawan }}
-                    </h2>
-                </div>
+                    <p class="text-sm text-gray-500">
+                        Pencatatan Stok Hari Ini
+                    </p>
 
-                <div class="flex h-14 w-14 items-center justify-center rounded-full bg-purple-100">
-                    <i class="fa-solid fa-user-tie text-2xl text-purple-600"></i>
+                    @if ($stokKeluarHariIni > 0)
+                        <h2 class="mt-2 text-lg font-bold text-green-600">
+                            Sudah Dicatat
+                        </h2>
+
+                        <p class="mt-1 text-xs text-gray-500">
+                            {{ $stokKeluarHariIni }} pencatatan stok keluar hari ini
+                        </p>
+                    @else
+                        <h2 class="mt-2 text-lg font-bold text-yellow-600">
+                            Belum Dicatat
+                        </h2>
+
+                        <p class="mt-1 text-xs text-gray-500">
+                            Jangan lupa mencatat penggunaan stok hari ini
+                        </p>
+                    @endif
                 </div>
             </div>
         </div>
@@ -78,14 +91,14 @@
         <div class="rounded-xl bg-white p-6 shadow-sm">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-sm text-gray-500">Kendaraan Diproses</p>
+                    <p class="text-sm text-gray-500">Total Karyawan</p>
                     <h2 class="mt-2 text-3xl font-bold text-[#3A4163]">
-                        {{ $kendaraanDiproses }}
+                        {{ $totalKaryawan }}
                     </h2>
                 </div>
 
-                <div class="flex h-14 w-14 items-center justify-center rounded-full bg-cyan-100">
-                    <i class="fa-solid fa-soap text-2xl text-cyan-600"></i>
+                <div class="flex h-14 w-14 items-center justify-center rounded-full bg-purple-100">
+                    <i class="fa-solid fa-user-tie text-2xl text-purple-600"></i>
                 </div>
             </div>
         </div>

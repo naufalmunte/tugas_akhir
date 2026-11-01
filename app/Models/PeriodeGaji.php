@@ -14,7 +14,7 @@ class PeriodeGaji extends Model
     protected $fillable = [
         'tahun',
         'bulan',
-        'gaji_per_order',
+        'persentase_gaji',
         'status'
     ];
 

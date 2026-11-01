@@ -27,11 +27,14 @@
                             <div class="relative">
                                 <i
                                     class="fa-solid fa-layer-group absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
-                                <select name="kategori_layanan_id"
+                                <select name="kategori_layanan_id" id="kategoriLayanan"
                                     class="bg-gray-50 border {{ $errors->has('kategori_layanan_id') ? 'border-red-500' : 'border-gray-300' }} text-gray-900 text-sm rounded-lg focus:ring-[#5AA8D6] focus:border-[#5AA8D6] block w-full pl-10 p-2.5">
+
                                     @foreach ($kategori as $item)
                                         <option value="{{ $item->id }}"
+                                            data-butuh-kendaraan="{{ $item->butuh_kendaraan ? 1 : 0 }}"
                                             {{ old('kategori_layanan_id', $layanan->kategori_layanan_id) == $item->id ? 'selected' : '' }}>
+
                                             {{ $item->nama_kategori }}
                                         </option>
                                     @endforeach
@@ -72,22 +75,35 @@
                             </div>
 
                             <div>
-                                <label class="block mb-2 text-sm font-medium text-gray-900">Estimasi (Menit)</label>
-                                <div class="relative">
-                                    <i class="fa-solid fa-clock absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
-                                    <input type="number" name="estimasi_menit"
-                                        class="bg-gray-50 border {{ $errors->has('estimasi_menit') ? 'border-red-500' : 'border-gray-300' }} text-gray-900 text-sm rounded-lg focus:ring-[#5AA8D6] focus:border-[#5AA8D6] block w-full pl-10 p-2.5"
-                                        value="{{ old('estimasi_menit', $layanan->estimasi_menit) }}"
-                                        placeholder="Contoh: 45">
+                                <div id="estimasiContainer">
+                                    <label class="block mb-2 text-sm font-medium text-gray-900">
+                                        Estimasi Pengerjaan
+                                    </label>
+
+                                    <div class="relative">
+                                        <i
+                                            class="fa-solid fa-clock absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+
+                                        <input type="number" name="estimasi_menit" id="estimasiMenit"
+                                            class="bg-gray-50 border {{ $errors->has('estimasi_menit') ? 'border-red-500' : 'border-gray-300' }} text-gray-900 text-sm rounded-lg focus:ring-[#5AA8D6] focus:border-[#5AA8D6] block w-full pl-10 p-2.5"
+                                            value="{{ old('estimasi_menit', $layanan->estimasi_menit) }}"
+                                            placeholder="Contoh: 2880">
+                                    </div>
+
+                                    <p class="mt-1 text-xs text-gray-400">
+                                        Estimasi hanya digunakan untuk layanan karpet.
+                                    </p>
+
+                                    @error('estimasi_menit')
+                                        <p class="mt-1 text-xs text-red-500">
+                                            {{ $message }}
+                                        </p>
+                                    @enderror
                                 </div>
-                                @error('estimasi_menit')
-                                    <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
-                                @enderror
                             </div>
                         </div>
                     </div>
 
-                    {{-- Kolom Kanan --}}
                     <div class="space-y-4">
                         <div>
                             <label class="block mb-2 text-sm font-medium text-gray-900">Status</label>
@@ -117,7 +133,6 @@
                     </div>
                 </div>
 
-                {{-- Action Buttons --}}
                 <div class="flex justify-end gap-3 mt-8 pt-5 border-t border-gray-100">
                     <button type="submit"
                         class="w-full md:w-auto px-6 py-2.5 bg-[#5AA8D6] text-white font-medium text-sm rounded-lg hover:bg-[#3A4163] transition focus:ring-4 focus:outline-none focus:ring-blue-300 flex items-center justify-center">
@@ -127,4 +142,36 @@
             </form>
         </div>
     </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const kategoriLayanan = document.getElementById('kategoriLayanan');
+            const estimasiContainer = document.getElementById('estimasiContainer');
+            const estimasiMenit = document.getElementById('estimasiMenit');
+
+            function toggleEstimasi() {
+                const option =
+                    kategoriLayanan.options[kategoriLayanan.selectedIndex];
+
+                if (!option) {
+                    return;
+                }
+
+                const butuhKendaraan =
+                    option.dataset.butuhKendaraan;
+
+                if (butuhKendaraan === '0') {
+                    // Karpet
+                    estimasiContainer.classList.remove('hidden');
+                } else {
+                    // Mobil / Motor
+                    estimasiContainer.classList.add('hidden');
+                    estimasiMenit.value = '';
+                }
+            }
+
+            kategoriLayanan.addEventListener('change', toggleEstimasi);
+
+            toggleEstimasi();
+        });
+    </script>
 @endsection

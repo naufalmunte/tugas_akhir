@@ -47,17 +47,26 @@
 
                 <div class="md:col-span-2">
                     <label class="mb-2 block text-sm font-medium text-gray-700">
-                        Gaji per Order
+                        Persentase Gaji Karyawan
                     </label>
-                    <input type="number" name="gaji_per_order" value="{{ old('gaji_per_order') }}" min="1000"
-                        placeholder="Masukkan nominal gaji per order"
-                        class="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-[#5AA8D6] focus:outline-none">
-                    @error('gaji_per_order')
+
+                    <div class="relative">
+                        <input type="number" name="persentase_gaji" value="{{ old('persentase_gaji', 40) }}" min="1"
+                            max="100" step="0.01" placeholder="Masukkan persentase gaji"
+                            class="w-full rounded-lg border border-gray-300 px-4 py-2 pr-12 focus:border-[#5AA8D6] focus:outline-none">
+
+                        <span class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500">
+                            %
+                        </span>
+                    </div>
+
+                    @error('persentase_gaji')
                         <small class="text-red-500">{{ $message }}</small>
                     @enderror
+
                     <p class="mt-2 text-sm text-gray-500">
-                        Sistem akan otomatis menghitung gaji seluruh karyawan berdasarkan order yang selesai pada periode
-                        yang dipilih.
+                        Persentase gaji karyawan dari total nilai order yang selesai.
+                        Contoh: 40% untuk karyawan dan 60% untuk usaha.
                     </p>
                 </div>
             </div>

@@ -9,6 +9,7 @@ use App\Models\Karyawan;
 use App\Models\Order;
 use App\Models\Pelanggan;
 use App\Models\Stok;
+use App\Models\StokTransaksi;
 use Carbon\Carbon;
 
 class DashboardController extends Controller
@@ -24,6 +25,8 @@ class DashboardController extends Controller
             'Diproses',
             'Menunggu Pembayaran',
         ])->count();
+
+        $stokKeluarHariIni = StokTransaksi::whereDate('created_at', today())->count();
 
         $totalKaryawan = Karyawan::count();
 
@@ -55,6 +58,7 @@ class DashboardController extends Controller
             'orderHariIni',
             'prosesAktif',
             'totalKaryawan',
+            'stokKeluarHariIni',
             'kendaraanDiproses',
             'kendaraanMenunggu',
             'karpetAktif',

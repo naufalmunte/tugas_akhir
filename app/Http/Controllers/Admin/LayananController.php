@@ -40,7 +40,7 @@ class LayananController extends Controller
             'kategori_layanan_id'=>'required|exists:kategori_layanan,id',
             'nama_layanan'=>'required|max:100|unique:layanan,nama_layanan,NULL,id,kategori_layanan_id,'.$request->kategori_layanan_id,
             'harga'=>'required|numeric|min:0',
-            'estimasi_menit'=>'required|integer|min:1',
+            'estimasi_menit'=>'nullable|integer|min:1',
             'deskripsi'=>'nullable',
             'status'=>'required|in:aktif,nonaktif'
         ],
@@ -53,6 +53,12 @@ class LayananController extends Controller
             'status.required'=>'Status layanan harus dipilih.'
         ]
         );
+        
+        $kategori = KategoriLayanan::findOrFail($request->kategori_layanan_id);
+
+        $estimasiMenit = $kategori->butuh_kendaraan
+            ? null
+            : $request->estimasi_menit;
 
         Layanan::create([
             'kategori_layanan_id'=>$request->kategori_layanan_id,

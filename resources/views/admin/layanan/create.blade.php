@@ -19,19 +19,20 @@
                 @csrf
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
-                    {{-- Kolom Kiri --}}
                     <div class="space-y-4">
                         <div>
                             <label class="block mb-2 text-sm font-medium text-gray-900">Kategori Layanan</label>
                             <div class="relative">
                                 <i
                                     class="fa-solid fa-layer-group absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
-                                <select name="kategori_layanan_id"
+                                <select name="kategori_layanan_id" id="kategoriLayanan"
                                     class="bg-gray-50 border {{ $errors->has('kategori_layanan_id') ? 'border-red-500' : 'border-gray-300' }} text-gray-900 text-sm rounded-lg focus:ring-[#5AA8D6] focus:border-[#5AA8D6] block w-full pl-10 p-2.5">
-                                    <option value="">-- Pilih Kategori --</option>
+                                    <option value="">Pilih Kategori</option>
                                     @foreach ($kategori as $item)
                                         <option value="{{ $item->id }}"
+                                            data-butuh-kendaraan="{{ $item->butuh_kendaraan ? 1 : 0 }}"
                                             {{ old('kategori_layanan_id') == $item->id ? 'selected' : '' }}>
+
                                             {{ $item->nama_kategori }}
                                         </option>
                                     @endforeach
@@ -70,16 +71,27 @@
                                 @enderror
                             </div>
 
-                            <div>
-                                <label class="block mb-2 text-sm font-medium text-gray-900">Estimasi (Menit)</label>
+                            <div id="estimasiContainer" class="hidden">
+                                <label class="block mb-2 text-sm font-medium text-gray-900">
+                                    Estimasi Pengerjaan
+                                </label>
+
                                 <div class="relative">
                                     <i class="fa-solid fa-clock absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
-                                    <input type="number" name="estimasi_menit"
+
+                                    <input type="number" name="estimasi_menit" id="estimasiMenit"
                                         class="bg-gray-50 border {{ $errors->has('estimasi_menit') ? 'border-red-500' : 'border-gray-300' }} text-gray-900 text-sm rounded-lg focus:ring-[#5AA8D6] focus:border-[#5AA8D6] block w-full pl-10 p-2.5"
-                                        value="{{ old('estimasi_menit') }}" placeholder="Contoh: 45">
+                                        value="{{ old('estimasi_menit') }}" placeholder="Contoh: 2880">
                                 </div>
+
+                                <p class="mt-1 text-xs text-gray-400">
+                                    Estimasi hanya digunakan untuk layanan karpet.
+                                </p>
+
                                 @error('estimasi_menit')
-                                    <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
+                                    <p class="mt-1 text-xs text-red-500">
+                                        {{ $message }}
+                                    </p>
                                 @enderror
                             </div>
                         </div>
@@ -121,4 +133,32 @@
             </form>
         </div>
     </div>
+    <script>
+        const kategoriLayanan = document.getElementById('kategoriLayanan');
+        const estimasiContainer = document.getElementById('estimasiContainer');
+        const estimasiMenit = document.getElementById('estimasiMenit');
+
+        function toggleEstimasi() {
+            const option = kategoriLayanan.options[kategoriLayanan.selectedIndex];
+
+            if (!option || !option.value) {
+                estimasiContainer.classList.add('hidden');
+                estimasiMenit.value = '';
+                return;
+            }
+
+            const butuhKendaraan = option.dataset.butuhKendaraan;
+
+            if (butuhKendaraan === '0') {
+                estimasiContainer.classList.remove('hidden');
+            } else {
+                estimasiContainer.classList.add('hidden');
+                estimasiMenit.value = '';
+            }
+        }
+
+        kategoriLayanan.addEventListener('change', toggleEstimasi);
+
+        document.addEventListener('DOMContentLoaded', toggleEstimasi);
+    </script>
 @endsection

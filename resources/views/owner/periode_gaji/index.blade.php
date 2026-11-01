@@ -30,7 +30,7 @@
                         <th class="border px-2 py-2 text-center">No</th>
                         <th class="border px-2 py-2 text-center">Tahun</th>
                         <th class="border px-2 py-2 text-center">Bulan</th>
-                        <th class="border px-2 py-2 text-right">Gaji / Order</th>
+                        <th class="border px-2 py-2 text-right">Persentase Gaji</th>
                         <th class="border px-2 py-2 text-center">Total Order</th>
                         <th class="border px-2 py-2 text-center">Jml Karyawan</th>
                         <th class="border px-2 py-2 text-right">Total Gaji</th>
@@ -45,9 +45,7 @@
                             <td class="border px-2 py-2 text-center whitespace-nowrap">{{ $periodeGaji->firstItem() + $loop->index }}</td>
                             <td class="border px-2 py-2 text-center font-medium whitespace-nowrap">{{ $item->tahun }}</td>
                             <td class="border px-2 py-2 text-center">{{ $item->bulan }}</td>
-                            <td class="border px-2 py-2 text-right whitespace-nowrap">
-                                Rp {{ number_format($item->gaji_per_order, 0, ',', '.') }}
-                            </td>
+                            <td class="border px-2 py-2 text-right font-bold text-gray-900 whitespace-nowrap">{{ $item->persentase_gaji }} %</td>
                             <td class="border px-2 py-2 text-center whitespace-nowrap">{{ $item->gaji->sum('jumlah_order') }}</td>
                             <td class="border px-2 py-2 text-center whitespace-nowrap">{{ $item->gaji->count() }}</td>
                             <td class="border px-2 py-2 text-right font-bold text-gray-900 whitespace-nowrap">

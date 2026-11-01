@@ -37,7 +37,7 @@
                                 {{ $item->antrean->nomor_antrean ?? '-' }}</td>
                             <td class="border px-4 py-3 font-medium text-gray-800">{{ $item->pelanggan->nama }}</td>
                             <td class="border px-4 py-3 text-gray-600">{{ $item->layanan->nama_layanan }}</td>
-                            <td class="border px-4 py-3 text-gray-600">{{ $item->karyawan->nama ?? '-' }}</td>
+                            <td class="border px-4 py-3 text-gray-600">{{ $item->karyawan->pluck('nama')->join(', ') ?: '-' }}</td>
                             <td class="border px-4 py-3 text-end font-semibold text-gray-800">Rp
                                 {{ number_format($item->harga, 0, ',', '.') }}</td>
                             <td class="border px-4 py-3 text-center">
@@ -144,7 +144,7 @@
                         }
                         Swal.fire({
                             icon: 'success',
-                            title: 'Member Ditemukan',
+                            title: 'Pelanggan Ditemukan',
                             text: 'Mengalihkan ke halaman order...',
                             timer: 1200,
                             showConfirmButton: false

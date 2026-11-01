@@ -60,7 +60,7 @@
                             </td>
                             <td class="border px-4 py-3 font-medium text-gray-800">{{ $item->pelanggan->nama }}</td>
                             <td class="border px-4 py-3 text-gray-600">{{ $item->layanan->nama_layanan }}</td>
-                            <td class="border px-4 py-3 text-gray-600">{{ $item->karyawan->nama ?? '-' }}</td>
+                            <td class="border px-4 py-3 text-gray-600">{{ $item->karyawan->pluck('nama')->join(', ') ?: '-' }}</td>
                             <td class="border px-4 py-3 text-center">
                                 @if ($item->antrean)
                                     @switch($item->antrean->status)

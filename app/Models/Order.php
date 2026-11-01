@@ -18,10 +18,8 @@ class Order extends Model
         'pelanggan_id',
         'kendaraan_id',
         'layanan_id',
-        'karyawan_id',
         'harga',
         'metode_pembayaran',
-        'qris_payload',
         'midtrans_order_id',
         'status_pembayaran',     
     ];
@@ -44,7 +42,12 @@ class Order extends Model
 
     public function karyawan()
     {
-        return $this->belongsTo(Karyawan::class);
+        return $this->belongsToMany(
+            Karyawan::class,
+            'order_karyawan',
+            'order_id',
+            'karyawan_id'
+        )->withTimestamps();
     }
 
     public function antrean()

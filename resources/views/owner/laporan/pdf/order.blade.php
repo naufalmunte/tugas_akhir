@@ -71,7 +71,7 @@
                     <td>{{ $item->created_at->format('d-m-Y') }}</td>
                     <td>{{ $item->pelanggan->nama }}</td>
                     <td>{{ $item->layanan->nama_layanan }}</td>
-                    <td>{{ $item->karyawan->nama ?? '-' }}</td>
+                    <td>{{ $item->karyawan->pluck('nama')->join(', ') ?: '-' }}</td>
                     <td align="center">{{ $item->antrean->status }}</td>
                 </tr>
             @empty

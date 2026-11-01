@@ -46,7 +46,17 @@
                             <td class="border px-4 py-3 font-medium text-gray-800">{{ $item->nama_layanan }}</td>
                             <td class="border px-4 py-3 text-center font-semibold text-gray-800">Rp
                                 {{ number_format($item->harga, 0, ',', '.') }}</td>
-                            <td class="border px-4 py-3 text-center text-gray-600">{{ $item->estimasi_menit }} Menit</td>
+                            <td class="border px-4 py-3 text-center text-gray-600">
+                                @if ($item->estimasi_menit)
+                                    @if ($item->estimasi_menit >= 1440 && $item->estimasi_menit % 1440 == 0)
+                                        {{ $item->estimasi_menit / 1440 }} Hari
+                                    @else
+                                        {{ $item->estimasi_menit }} Menit
+                                    @endif
+                                @else
+                                    -
+                                @endif
+                            </td>
                             <td class="border px-4 py-3 text-center">
                                 @if ($item->status == 'aktif')
                                     <span

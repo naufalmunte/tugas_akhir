@@ -47,7 +47,13 @@
                                 <td class="border px-3 py-2">{{ $item->order->pelanggan->nama }}</td>
                                 <td class="border px-3 py-2">{{ $item->order->kendaraan->plat_nomor ?? '-' }}</td>
                                 <td class="border px-3 py-2">{{ $item->order->layanan->nama_layanan }}</td>
-                                <td class="border px-3 py-2">{{ $item->order->karyawan->nama ?? '-' }}</td>
+                                <td class="border px-3 py-2">
+                                    @if ($item->order->karyawan->isNotEmpty())
+                                        {{ $item->order->karyawan->pluck('nama')->join(', ') }}
+                                    @else
+                                        -
+                                    @endif
+                                </td>
                                 <td class="border px-3 py-2 text-center whitespace-nowrap">
                                     @if ($item->status == 'Menunggu')
                                         <span
@@ -72,7 +78,12 @@
                                             <button type="button"
                                                 class="btnMulai w-full xl:w-auto rounded-lg bg-blue-500 px-2.5 py-1.5 text-xs text-white hover:bg-blue-600 transition"
                                                 data-modal-target="modalMulai" data-modal-toggle="modalMulai"
-                                                data-antrean="{{ $item->id }}">
+                                                data-antrean="{{ $item->id }}"
+                                                data-nomor-antrean="{{ $item->nomor_antrean ?? '-' }}"
+                                                data-pelanggan="{{ $item->order->pelanggan->nama }}"
+                                                data-layanan="{{ $item->order->layanan->nama_layanan }}"
+                                                data-butuh-kendaraan="1">
+
                                                 Mulai
                                             </button>
                                             <form class="formBatalkan w-full xl:w-auto"
@@ -145,7 +156,13 @@
                                     {{ $karpet->firstItem() + $loop->index }}</td>
                                 <td class="border px-3 py-2">{{ $item->order->pelanggan->nama }}</td>
                                 <td class="border px-3 py-2">{{ $item->order->layanan->nama_layanan }}</td>
-                                <td class="border px-3 py-2">{{ $item->order->karyawan->nama ?? '-' }}</td>
+                                <td class="border px-3 py-2">
+                                    @if ($item->order->karyawan->isNotEmpty())
+                                        {{ $item->order->karyawan->pluck('nama')->join(', ') }}
+                                    @else
+                                        -
+                                    @endif
+                                </td>
                                 <td class="border px-3 py-2 text-center whitespace-nowrap">
                                     @if ($item->status == 'Menunggu')
                                         <span
@@ -170,8 +187,13 @@
                                             <button type="button"
                                                 class="btnMulai w-full xl:w-auto rounded-lg bg-blue-500 px-3 py-1.5 text-sm font-medium text-white hover:bg-blue-600 transition whitespace-nowrap"
                                                 data-modal-target="modalMulai" data-modal-toggle="modalMulai"
-                                                data-antrean="{{ $item->id }}">
-                                                <i class="fa-solid fa-play mr-1"></i> Mulai
+                                                data-antrean="{{ $item->id }}" data-nomor-antrean="-"
+                                                data-pelanggan="{{ $item->order->pelanggan->nama }}"
+                                                data-layanan="{{ $item->order->layanan->nama_layanan }}"
+                                                data-butuh-kendaraan="0">
+
+                                                <i class="fa-solid fa-play mr-1"></i>
+                                                Mulai
                                             </button>
                                             <form class="formBatalkan w-full xl:w-auto"
                                                 action="{{ route('admin.antrean.batalkan', $item->id) }}" method="POST">
@@ -226,38 +248,134 @@
 
         <div id="modalMulai" tabindex="-1" aria-hidden="true"
             class="fixed inset-0 z-50 hidden items-center justify-center bg-black/60 p-4 backdrop-blur-sm transition-opacity">
-            <div class="w-full max-w-md rounded-xl bg-white shadow-2xl relative overflow-hidden">
+
+            <div class="relative w-full max-w-3xl overflow-hidden rounded-xl bg-white shadow-2xl">
+
+                {{-- Header --}}
                 <div class="flex items-center justify-between border-b px-6 py-4">
-                    <h3 class="text-lg font-bold text-gray-900">Mulai Pengerjaan</h3>
+                    <div>
+                        <h3 class="text-lg font-bold text-gray-900">
+                            Mulai Pengerjaan
+                        </h3>
+
+                        <p class="mt-1 text-sm text-gray-500">
+                            Pilih satu atau beberapa karyawan yang akan mengerjakan order.
+                        </p>
+                    </div>
+
                     <button type="button" data-modal-hide="modalMulai"
-                        class="text-gray-400 hover:text-red-500 hover:bg-gray-100 rounded-lg w-8 h-8 flex items-center justify-center transition">
+                        class="flex h-8 w-8 items-center justify-center rounded-lg text-gray-400 transition hover:bg-gray-100 hover:text-red-500">
+
                         <i class="fa-solid fa-xmark text-xl"></i>
                     </button>
                 </div>
+
                 <form id="formMulai" method="POST">
                     @csrf
                     @method('PUT')
 
-                    <div class="p-6">
-                        <label class="block mb-2 text-sm font-medium text-gray-900">Pilih Karyawan</label>
-                        <select name="karyawan_id"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-[#5AA8D6] focus:border-[#5AA8D6] block w-full p-3"
-                            required>
-                            <option value="">Pilih Karyawan</option>
-                            @foreach ($karyawan as $item)
-                                <option value="{{ $item->id }}">{{ $item->nama }}</option>
-                            @endforeach
-                        </select>
+                    <div class="grid grid-cols-1 gap-6 p-6 md:grid-cols-[0.9fr_1.1fr]">
+
+                        {{-- Informasi Order --}}
+                        <div>
+                            <div class="rounded-xl border border-gray-200 bg-gray-50 p-5">
+
+                                <p class="mb-4 text-xs font-semibold uppercase tracking-wider text-gray-400">
+                                    Informasi Order
+                                </p>
+
+                                <div class="space-y-4">
+
+                                    <div class="flex items-center justify-between gap-4">
+                                        <span class="text-sm text-gray-500">
+                                            Antrean
+                                        </span>
+
+                                        <span id="modalNomorAntrean" class="text-sm font-semibold text-[#3A4163]">
+                                            -
+                                        </span>
+                                    </div>
+
+                                    <div class="flex items-center justify-between gap-4">
+                                        <span class="text-sm text-gray-500">
+                                            Pelanggan
+                                        </span>
+
+                                        <span id="modalPelanggan" class="text-right text-sm font-semibold text-[#3A4163]">
+                                            -
+                                        </span>
+                                    </div>
+
+                                    <div class="flex items-center justify-between gap-4">
+                                        <span class="text-sm text-gray-500">
+                                            Layanan
+                                        </span>
+
+                                        <span id="modalLayanan" class="text-right text-sm font-semibold text-[#3A4163]">
+                                            -
+                                        </span>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        {{-- Pilih Karyawan --}}
+                        <div>
+                            <div class="mb-3">
+                                <label class="block text-sm font-semibold text-gray-900">
+                                    Pilih Karyawan
+                                </label>
+
+                                <p class="mt-1 text-xs text-gray-500">
+                                    Dapat memilih lebih dari satu karyawan.
+                                </p>
+                            </div>
+
+                            <div class="grid max-h-56 grid-cols-1 gap-2 overflow-y-auto pr-2 sm:grid-cols-2">
+
+                                @foreach ($karyawan as $item)
+                                    <label
+                                        class="flex cursor-pointer items-center gap-3 rounded-lg border border-gray-200 px-4 py-3 transition hover:border-blue-300 hover:bg-blue-50">
+
+                                        <input type="checkbox" name="karyawan_id[]" value="{{ $item->id }}"
+                                            class="checkboxKaryawan h-4 w-4 shrink-0 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+
+                                        <span class="truncate text-sm font-medium text-gray-700">
+                                            {{ $item->nama }}
+                                        </span>
+
+                                    </label>
+                                @endforeach
+
+                            </div>
+
+                            {{-- Pesan validasi frontend --}}
+                            <p id="errorKaryawan" class="mt-2 hidden text-xs text-red-500">
+                                Pilih minimal satu karyawan.
+                            </p>
+                        </div>
+
                     </div>
 
+                    {{-- Footer --}}
                     <div class="flex justify-end gap-3 border-t bg-gray-50 px-6 py-4">
+
                         <button type="button" data-modal-hide="modalMulai"
-                            class="rounded-lg bg-white border border-gray-200 px-5 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 transition">Batal</button>
-                        <button type="submit"
-                            class="rounded-lg bg-blue-600 px-5 py-2 text-sm font-medium text-white hover:bg-blue-700 transition flex items-center">
-                            </i> Mulai Proses
+                            class="rounded-lg border border-gray-200 bg-white px-5 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-100">
+
+                            Batal
                         </button>
+
+                        <button type="submit"
+                            class="flex items-center gap-2 rounded-lg bg-blue-600 px-5 py-2 text-sm font-medium text-white transition hover:bg-blue-700">
+
+                            <i class="fa-solid fa-play"></i>
+                            Mulai Proses
+                        </button>
+
                     </div>
+
                 </form>
             </div>
         </div>
@@ -358,14 +476,50 @@
         <script src="https://app.sandbox.midtrans.com/snap/snap.js"
             data-client-key="{{ config('services.midtrans.client_key') }}"></script>
         <script>
-            document.querySelectorAll('.btnMulai').forEach(function(btn) {
-                btn.addEventListener('click', function() {
-                    const id = this.dataset.antrean;
-                    document.getElementById('formMulai').action = "{{ url('admin/antrean') }}/" + id +
-                        "/mulai";
+            document.querySelectorAll('.btnMulai').forEach(button => {
+                button.addEventListener('click', function() {
+                    const antreanId = this.dataset.antrean;
+
+                    document.getElementById('modalNomorAntrean').textContent =
+                        this.dataset.nomorAntrean || '-';
+
+                    document.getElementById('modalPelanggan').textContent =
+                        this.dataset.pelanggan || '-';
+
+                    document.getElementById('modalLayanan').textContent =
+                        this.dataset.layanan || '-';
+
+                    document.getElementById('formMulai').action =
+                        `/admin/antrean/${antreanId}/mulai`;
+
+                    document.getElementById('formMulai').dataset.butuhKendaraan =
+                        this.dataset.butuhKendaraan;
+
+                    document.querySelectorAll('.checkboxKaryawan').forEach(checkbox => {
+                        checkbox.checked = false;
+                    });
+
+                    document.getElementById('errorKaryawan')
+                        .classList.add('hidden');
                 });
             });
+            document.getElementById('formMulai').addEventListener('submit', function(e) {
+                const dipilih = document.querySelectorAll(
+                    '.checkboxKaryawan:checked'
+                );
 
+                if (dipilih.length === 0) {
+                    e.preventDefault();
+
+                    document.getElementById('errorKaryawan')
+                        .classList.remove('hidden');
+
+                    return;
+                }
+
+                document.getElementById('errorKaryawan')
+                    .classList.add('hidden');
+            });
             document.querySelectorAll('.formSelesai').forEach(function(form) {
                 form.addEventListener('submit', function(e) {
                     e.preventDefault();

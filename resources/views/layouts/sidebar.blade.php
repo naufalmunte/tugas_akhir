@@ -27,7 +27,7 @@
                 aria-controls="master-data" data-collapse-toggle="master-data">
                 <div class="flex items-center gap-3">
                     <i class="fa-solid fa-database w-5 text-center"></i>
-                    <span>Master Data</span>
+                    <span>Data Operasional</span>
                 </div>
                 <i class="fa-solid fa-chevron-down text-xs transition-transform duration-200"></i>
             </button>

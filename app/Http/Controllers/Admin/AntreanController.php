@@ -16,8 +16,6 @@ use App\Services\MidtransService;
 
 class AntreanController extends Controller
 {
-
-    private $qrisStatis="00020101021126610014COM.GO-JEK.WWW01189360091436689735970210G6689735970303UMI51440014ID.CO.QRIS.WWW0215ID10254391372470303UMI5204472253033605802ID5915Lasax Adventure6006PADANG61052511162070703A0163041497";
     public function index()
     {
         $kendaraan = Antrean::with([
@@ -48,39 +46,60 @@ class AntreanController extends Controller
     }
 
     public function mulai(Request $request, Antrean $antrean)
-    {
-        $request->validate([
-            'karyawan_id' => 'required|exists:karyawan,id'
-        ]);
+{
+    $request->validate([
+        'karyawan_id' => 'required|array|min:1',
+        'karyawan_id.*' => 'exists:karyawan,id',
+    ], [
+        'karyawan_id.required' => 'Pilih minimal satu karyawan.',
+        'karyawan_id.array' => 'Data karyawan tidak valid.',
+        'karyawan_id.min' => 'Pilih minimal satu karyawan.',
+        'karyawan_id.*.exists' => 'Karyawan yang dipilih tidak ditemukan.',
+    ]);
 
-        $antrean->load('order.layanan.kategori');
+    $antrean->load('order.layanan.kategori');
 
-        if ($antrean->order->layanan->kategori->butuh_kendaraan) {
+    $order = $antrean->order;
 
-            $dipakai = Order::where('karyawan_id', $request->karyawan_id)
-                ->whereHas('antrean', function ($q) {
-                    $q->where('status', 'Diproses');
-                })
-                ->whereHas('layanan.kategori', function ($q) {
-                    $q->where('butuh_kendaraan', true);
-                })
-                ->exists();
+    // Jika order membutuhkan kendaraan (mobil / motor)
+    if ($order->layanan->kategori->butuh_kendaraan) {
 
-            if ($dipakai) {
-                return back()->with('error', 'Karyawan sedang mengerjakan kendaraan lain.');
-            }
+        $karyawanSibuk = Karyawan::whereIn('id', $request->karyawan_id)
+            ->whereHas('orders', function ($query) use ($order) {
+
+                $query->where('orders.id', '!=', $order->id)
+                    ->whereHas('antrean', function ($q) {
+                        $q->where('status', 'Diproses');
+                    })
+                    ->whereHas('layanan.kategori', function ($q) {
+                        $q->where('butuh_kendaraan', true);
+                    });
+
+            })
+            ->pluck('nama');
+
+        if ($karyawanSibuk->isNotEmpty()) {
+            return back()->with(
+                'error',
+                'Karyawan ' . $karyawanSibuk->join(', ') .
+                ' sedang mengerjakan kendaraan lain.'
+            );
         }
-
-        $antrean->order->update([
-            'karyawan_id' => $request->karyawan_id
-        ]);
-
-        $antrean->update([
-            'status' => 'Diproses'
-        ]);
-
-        return back()->with('success', 'Pengerjaan dimulai.');
     }
+
+    // Simpan beberapa karyawan ke pivot order_karyawan
+    $order->karyawan()->sync($request->karyawan_id);
+
+    // Ubah status antrean
+    $antrean->update([
+        'status' => 'Diproses'
+    ]);
+
+    return back()->with(
+        'success',
+        'Pengerjaan berhasil dimulai.'
+    );
+}
 
     public function selesaiCuci(Antrean $antrean)
     {
@@ -192,28 +211,4 @@ class AntreanController extends Controller
         return back()->with('success', 'Order berhasil dibatalkan.');
     }
 
-    public function generateQris(Antrean $antrean,QrisService $qrisService)
-    {
-        $payload=$qrisService->makeDynamic(
-            $this->qrisStatis,
-            $antrean->order->harga
-        );
-
-        $antrean->order->update([
-            'qris_payload'=>$payload
-        ]);
-
-        $result=Builder::create()
-            ->writer(new PngWriter())
-            ->data($payload)
-            ->encoding(new Encoding('UTF-8'))
-            ->errorCorrectionLevel(ErrorCorrectionLevel::High)
-            ->size(280)
-            ->margin(10)
-            ->build();
-
-        return response()->json([
-            'image'=>'data:image/png;base64,'.base64_encode($result->getString())
-        ]);
-    }
 }

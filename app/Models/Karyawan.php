@@ -15,7 +15,12 @@ class Karyawan extends Model
 
     public function orders()
     {
-        return $this->hasMany(Order::class);
+        return $this->belongsToMany(
+            Order::class,
+            'order_karyawan',
+            'karyawan_id',
+            'order_id'
+        )->withTimestamps();
     }
     public function gaji()
     {

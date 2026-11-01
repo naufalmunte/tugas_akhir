@@ -8,6 +8,7 @@ use App\Models\Order;
 use App\Models\Pelanggan;
 use App\Models\Stok;
 use Illuminate\Http\Request;
+use App\Models\PeriodeGaji;
 use Carbon\Carbon;
 
 class DashboardController extends Controller
@@ -42,6 +43,32 @@ class DashboardController extends Controller
             ]
         )->count();
 
+        $bulanSekarang = [
+            1 => 'Januari',
+            2 => 'Februari',
+            3 => 'Maret',
+            4 => 'April',
+            5 => 'Mei',
+            6 => 'Juni',
+            7 => 'Juli',
+            8 => 'Agustus',
+            9 => 'September',
+            10 => 'Oktober',
+            11 => 'November',
+            12 => 'Desember',
+        ];
+
+        $tahunSekarang = now()->year;
+        $namaBulanSekarang = $bulanSekarang[now()->month];
+
+        $periodeGajiSekarang = PeriodeGaji::where('tahun', $tahunSekarang)
+            ->where('bulan', $namaBulanSekarang)
+            ->first();
+
+        $periodeGajiTerbaru = PeriodeGaji::latest('id')
+            ->take(3)
+            ->get();
+
         $tahunList = Order::selectRaw('YEAR(created_at) as tahun')
             ->distinct()
             ->orderBy('tahun', 'desc')
@@ -56,7 +83,11 @@ class DashboardController extends Controller
                 'stokMenipis',
                 'orderHariIni',
                 'antreanAktif',
-                'tahunList'
+                'tahunList', 
+                'periodeGajiSekarang',
+                'periodeGajiTerbaru',
+                'tahunSekarang',
+                'namaBulanSekarang'
             )
         );
     }

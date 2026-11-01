@@ -29,12 +29,13 @@ class PeriodeGajiController extends Controller
     {
         $request->validate([
             'tahun' => [
-        'integer',
-        'min:' . date('Y'),
-        'max:' . (date('Y') + 10),
-    ],
+                'required',
+                'integer',
+                'min:' . date('Y'),
+                'max:' . (date('Y') + 10),
+            ],
             'bulan' => 'required',
-            'gaji_per_order' => 'required|numeric|min:1',
+            'persentase_gaji' => 'required|numeric|min:0|max:100',
         ]);
 
         $cek = PeriodeGaji::where('tahun', $request->tahun)
@@ -42,17 +43,20 @@ class PeriodeGajiController extends Controller
             ->exists();
 
         if ($cek) {
-            return back()->with('error', 'Periode gaji sudah tersedia.');
+            return back()
+                ->withInput()
+                ->with('error', 'Periode gaji sudah tersedia.');
         }
 
         PeriodeGaji::create([
             'tahun' => $request->tahun,
             'bulan' => $request->bulan,
-            'gaji_per_order' => $request->gaji_per_order,
+            'persentase_gaji' => $request->persentase_gaji,
             'status' => 'Belum Diproses',
         ]);
 
-        return redirect()->route('owner.periode-gaji.index')
+        return redirect()
+            ->route('owner.periode-gaji.index')
             ->with('success', 'Periode gaji berhasil ditambahkan.');
     }
 
@@ -61,7 +65,8 @@ class PeriodeGajiController extends Controller
         $periode = PeriodeGaji::findOrFail($id);
 
         if ($periode->status == 'Sudah Diproses') {
-            return redirect()->route('owner.periode-gaji.index')
+            return redirect()
+                ->route('owner.periode-gaji.index')
                 ->with('error', 'Periode yang sudah diproses tidak dapat diubah.');
         }
 
@@ -73,23 +78,25 @@ class PeriodeGajiController extends Controller
         $periode = PeriodeGaji::findOrFail($id);
 
         if ($periode->status == 'Sudah Diproses') {
-            return redirect()->route('owner.periode-gaji.index')
+            return redirect()
+                ->route('owner.periode-gaji.index')
                 ->with('error', 'Periode yang sudah diproses tidak dapat diubah.');
         }
 
         $request->validate([
             'tahun' => 'required|digits:4',
             'bulan' => 'required',
-            'gaji_per_order' => 'required|numeric|min:1',
+            'persentase_gaji' => 'required|numeric|min:0|max:100',
         ]);
 
         $periode->update([
             'tahun' => $request->tahun,
             'bulan' => $request->bulan,
-            'gaji_per_order' => $request->gaji_per_order,
+            'persentase_gaji' => $request->persentase_gaji,
         ]);
 
-        return redirect()->route('owner.periode-gaji.index')
+        return redirect()
+            ->route('owner.periode-gaji.index')
             ->with('success', 'Periode gaji berhasil diperbarui.');
     }
 
@@ -98,13 +105,15 @@ class PeriodeGajiController extends Controller
         $periode = PeriodeGaji::findOrFail($id);
 
         if ($periode->status == 'Sudah Diproses') {
-            return redirect()->route('owner.periode-gaji.index')
+            return redirect()
+                ->route('owner.periode-gaji.index')
                 ->with('error', 'Periode yang sudah diproses tidak dapat dihapus.');
         }
 
         $periode->delete();
 
-        return redirect()->route('owner.periode-gaji.index')
+        return redirect()
+            ->route('owner.periode-gaji.index')
             ->with('success', 'Periode gaji berhasil dihapus.');
     }
 
@@ -128,7 +137,8 @@ class PeriodeGajiController extends Controller
 
             DB::commit();
 
-            return redirect()->route('owner.periode-gaji.index')
+            return redirect()
+                ->route('owner.periode-gaji.index')
                 ->with('success', 'Perhitungan gaji berhasil diproses.');
 
         } catch (\Exception $e) {
@@ -165,24 +175,57 @@ class PeriodeGajiController extends Controller
 
         $bulanAngka = $bulan[$periode->bulan];
 
-        $orders = Order::whereYear('created_at', $periode->tahun)
+        $orders = Order::with('karyawan')
+            ->whereYear('created_at', $periode->tahun)
             ->whereMonth('created_at', $bulanAngka)
-            ->whereNotNull('karyawan_id')
             ->whereHas('antrean', function ($query) {
                 $query->where('status', 'Selesai');
             })
-            ->get()
-            ->groupBy('karyawan_id');
+            ->whereHas('karyawan')
+            ->get();
 
-        foreach ($orders as $karyawanId => $dataOrder) {
+        $dataGaji = [];
 
-            $jumlahOrder = $dataOrder->count();
+        foreach ($orders as $order) {
+
+            $jumlahKaryawan = $order->karyawan->count();
+
+            if ($jumlahKaryawan === 0) {
+                continue;
+            }
+
+            // 40% atau sesuai persentase periode
+            // menjadi total bagian seluruh karyawan pada order
+            $totalBagianKaryawan =
+                $order->harga * ($periode->persentase_gaji / 100);
+
+            // Dibagi rata sesuai jumlah karyawan yang mengerjakan
+            $gajiPerKaryawan =
+                $totalBagianKaryawan / $jumlahKaryawan;
+
+            foreach ($order->karyawan as $karyawan) {
+
+                if (!isset($dataGaji[$karyawan->id])) {
+                    $dataGaji[$karyawan->id] = [
+                        'jumlah_order' => 0,
+                        'total_gaji' => 0,
+                    ];
+                }
+
+                $dataGaji[$karyawan->id]['jumlah_order']++;
+
+                $dataGaji[$karyawan->id]['total_gaji'] +=
+                    $gajiPerKaryawan;
+            }
+        }
+
+        foreach ($dataGaji as $karyawanId => $data) {
 
             Gaji::create([
                 'periode_gaji_id' => $periode->id,
                 'karyawan_id' => $karyawanId,
-                'jumlah_order' => $jumlahOrder,
-                'total_gaji' => $jumlahOrder * $periode->gaji_per_order,
+                'jumlah_order' => $data['jumlah_order'],
+                'total_gaji' => $data['total_gaji'],
             ]);
         }
     }

@@ -101,7 +101,6 @@ class OrderController extends Controller
             $nomor = null;
             $status = 'Menunggu';
 
-            // hanya layanan yang membutuhkan kendaraan diberi nomor antrean
             if ($layanan->kategori->butuh_kendaraan) {
 
                 $jumlah = Antrean::whereDate('created_at', $today)
@@ -121,7 +120,7 @@ class OrderController extends Controller
 
             session()->forget('pelanggan_id');
 
-            return redirect()->route('admin.order.index')
+            return redirect()->route('admin.antrean.index')
                 ->with('success', 'Order berhasil dibuat.');
 
         } catch (\Exception $e) {

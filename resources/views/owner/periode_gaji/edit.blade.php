@@ -39,11 +39,22 @@
                 </div>
 
                 <div>
-                    <label class="mb-2 block text-sm font-medium text-gray-900">Gaji per Order (Rp)</label>
-                    <input type="number" name="gaji_per_order"
-                        value="{{ old('gaji_per_order', $periode->gaji_per_order) }}" min="1000"
-                        class="w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-[#5AA8D6] focus:ring-[#5AA8D6] focus:outline-none">
-                    @error('gaji_per_order')
+                    <label class="mb-2 block text-sm font-medium text-gray-900">
+                        Persentase Gaji Karyawan
+                    </label>
+
+                    <div class="relative">
+                        <input type="number" name="persentase_gaji"
+                            value="{{ old('persentase_gaji', $periode->persentase_gaji) }}" min="1" max="100"
+                            step="0.01"
+                            class="w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 pr-10 text-sm text-gray-900 focus:border-[#5AA8D6] focus:ring-[#5AA8D6] focus:outline-none">
+
+                        <span class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500">
+                            %
+                        </span>
+                    </div>
+
+                    @error('persentase_gaji')
                         <small class="mt-1 block text-red-500">{{ $message }}</small>
                     @enderror
                 </div>

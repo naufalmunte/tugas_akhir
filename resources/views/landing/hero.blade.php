@@ -20,10 +20,19 @@
                     class="px-8 py-4 rounded-full bg-slate-900 text-white font-medium hover:bg-blue-600 hover:shadow-xl hover:shadow-blue-500/30 transition-all duration-300">
                     Hubungi Kami Sekarang
                 </a>
-                <a href="{{ route('login') }}"
-                    class="px-8 py-4 rounded-full bg-white text-slate-900 font-medium border border-gray-200 hover:border-blue-200 hover:bg-blue-50 transition-all duration-300">
-                    Login Admin
-                </a>
+                @auth
+                    <a href="{{ auth()->user()->role === 'owner' ? route('owner.dashboard') : route('admin.dashboard') }}"
+                        class="px-8 py-4 rounded-full bg-white text-slate-900 font-medium border border-gray-200 hover:border-blue-200 hover:bg-blue-50 transition-all duration-300">
+
+                        Dashboard
+                    </a>
+                @else
+                    <a href="{{ route('login') }}"
+                        class="px-8 py-4 rounded-full bg-white text-slate-900 font-medium border border-gray-200 hover:border-blue-200 hover:bg-blue-50 transition-all duration-300">
+
+                        Login Admin
+                    </a>
+                @endauth
             </div>
         </div>
     </div>
